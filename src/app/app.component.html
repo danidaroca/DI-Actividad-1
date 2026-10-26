@@ -1,0 +1,94 @@
+<ion-app>
+  <ion-split-pane contentId="main-content">
+    <ion-menu contentId="main-content" type="overlay">
+      <ion-content>
+        <!-- Cabecera del Menú -->
+        <div class="menu-brand">
+          <div class="brand-icon">
+            <ion-icon name="business-outline" aria-hidden="true"></ion-icon>
+          </div>
+          <div>
+            <h2>Gestión Empresarial</h2>
+            <span class="sub-version">v1.0.0 (DAM / DI)</span>
+          </div>
+        </div>
+
+        <!-- Usuario Conectado -->
+        @if (authService.currentUser$ | async; as user) {
+          <div class="user-profile-widget" role="region" aria-label="Perfil del usuario conectado">
+            <ion-icon name="person-circle-outline" class="user-avatar" aria-hidden="true"></ion-icon>
+            <div class="user-info">
+              <span class="user-name">{{ user.name }}</span>
+              <span class="user-email">{{ user.email }}</span>
+              <ion-badge [color]="user.role === 'ADMIN' ? 'danger' : 'primary'" class="role-badge">
+                {{ user.role === 'ADMIN' ? 'ADMINISTRADOR' : 'USUARIO ESTÁNDAR' }}
+              </ion-badge>
+            </div>
+          </div>
+        }
+
+        <!-- Menú de Navegación -->
+        <ion-list id="navigation-list" lines="none">
+          <ion-list-header>Navegación</ion-list-header>
+
+          @if (authService.currentUser$ | async; as user) {
+            <!-- Opciones para Administrador -->
+            @if (user.role === 'ADMIN') {
+              <ion-menu-toggle auto-hide="false">
+                <ion-item routerDirection="root" [routerLink]="['/dashboard']" routerLinkActive="selected" detail="false">
+                  <ion-icon aria-hidden="true" slot="start" name="stats-chart-outline"></ion-icon>
+                  <ion-label>Cuadro de Mando</ion-label>
+                </ion-item>
+              </ion-menu-toggle>
+            }
+
+            <!-- Opciones para todos los usuarios autenticados -->
+            <ion-menu-toggle auto-hide="false">
+              <ion-item routerDirection="root" [routerLink]="['/inventory']" routerLinkActive="selected" detail="false">
+                <ion-icon aria-hidden="true" slot="start" name="cube-outline"></ion-icon>
+                <ion-label>Inventario y Registros</ion-label>
+              </ion-item>
+            </ion-menu-toggle>
+
+            <ion-menu-toggle auto-hide="false">
+              <ion-item routerDirection="root" [routerLink]="['/help']" routerLinkActive="selected" detail="false">
+                <ion-icon aria-hidden="true" slot="start" name="help-circle-outline"></ion-icon>
+                <ion-label>Manual y Ayuda</ion-label>
+              </ion-item>
+            </ion-menu-toggle>
+          } @else {
+            <!-- Opciones para usuarios no autenticados -->
+            <ion-menu-toggle auto-hide="false">
+              <ion-item routerDirection="root" [routerLink]="['/login']" routerLinkActive="selected" detail="false">
+                <ion-icon aria-hidden="true" slot="start" name="log-in-outline"></ion-icon>
+                <ion-label>Iniciar Sesión</ion-label>
+              </ion-item>
+            </ion-menu-toggle>
+
+            <ion-menu-toggle auto-hide="false">
+              <ion-item routerDirection="root" [routerLink]="['/register']" routerLinkActive="selected" detail="false">
+                <ion-icon aria-hidden="true" slot="start" name="person-add-outline"></ion-icon>
+                <ion-label>Alta de Cuenta</ion-label>
+              </ion-item>
+            </ion-menu-toggle>
+          }
+        </ion-list>
+
+        <!-- Cerrar Sesión en pie del menú -->
+        @if (authService.currentUser$ | async) {
+          <div class="menu-footer">
+            <ion-menu-toggle auto-hide="false">
+              <ion-button fill="clear" color="danger" expand="block" (click)="logout()">
+                <ion-icon slot="start" name="log-out-outline"></ion-icon>
+                Cerrar Sesión
+              </ion-button>
+            </ion-menu-toggle>
+          </div>
+        }
+      </ion-content>
+    </ion-menu>
+
+    <!-- Enrutador principal de Ionic -->
+    <ion-router-outlet id="main-content"></ion-router-outlet>
+  </ion-split-pane>
+</ion-app>

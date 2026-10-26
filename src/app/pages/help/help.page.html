@@ -1,0 +1,84 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Manual de Usuario y Ayuda</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="help-content">
+  <div class="help-container">
+    <ion-card class="help-intro-card">
+      <ion-card-header>
+        <ion-card-title>Guía de Uso del Sistema de Gestión</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p>
+          Bienvenido al manual interactivo integrado de la plataforma. A continuación se detallan las funcionalidades
+          principales implementadas según las especificaciones técnicas del proyecto.
+        </p>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-accordion-group value="roles">
+      <ion-accordion value="roles">
+        <ion-item slot="header" color="light">
+          <ion-icon name="shield-outline" slot="start" color="primary"></ion-icon>
+          <ion-label>1. Roles de Usuario y Control de Acceso (RBAC)</ion-label>
+        </ion-item>
+        <div class="accordion-content" slot="content">
+          <p>El sistema soporta dos perfiles con permisos diferenciados mediante <code>Guards</code>:</p>
+          <ul>
+            <li><strong>Administrador:</strong> Acceso completo al Cuadro de Mando, catálogo de registros, creación y borrado de elementos.</li>
+            <li><strong>Usuario Estándar:</strong> Acceso al catálogo de registros para consulta y alta; rutas administrativas protegidas.</li>
+          </ul>
+        </div>
+      </ion-accordion>
+
+      <ion-accordion value="forms">
+        <ion-item slot="header" color="light">
+          <ion-icon name="document-text-outline" slot="start" color="primary"></ion-icon>
+          <ion-label>2. Formularios y Validaciones Asíncronas</ion-label>
+        </ion-item>
+        <div class="accordion-content" slot="content">
+          <p>
+            Tanto en el <strong>Registro de Usuario</strong> como en el <strong>Alta de Registros</strong>, los formularios
+            incorporan validaciones reactivas con comprobación asíncrona contra el backend simulado:
+          </p>
+          <ul>
+            <li>Verificación en tiempo real de correos electrónicos no duplicados.</li>
+            <li>Verificación de códigos únicos de producto (formato y disponibilidad).</li>
+            <li>Retroalimentación visual accesible (estados PENDING, valid e invalid).</li>
+          </ul>
+        </div>
+      </ion-accordion>
+
+      <ion-accordion value="components">
+        <ion-item slot="header" color="light">
+          <ion-icon name="search-outline" slot="start" color="primary"></ion-icon>
+          <ion-label>3. Componentes Visuales Reutilizables</ion-label>
+        </ion-item>
+        <div class="accordion-content" slot="content">
+          <ul>
+            <li><strong>StatCardComponent:</strong> Widget modular para la visualización de métricas y tendencias (KPIs).</li>
+            <li><strong>DataTableComponent:</strong> Tabla agnóstica con barra de búsqueda instantánea, selector de categorías, paginación y eventos hacia el contenedor padre.</li>
+          </ul>
+        </div>
+      </ion-accordion>
+
+      <ion-accordion value="export">
+        <ion-item slot="header" color="light">
+          <ion-icon name="download-outline" slot="start" color="primary"></ion-icon>
+          <ion-label>4. Exportación de Informes</ion-label>
+        </ion-item>
+        <div class="accordion-content" slot="content">
+          <p>
+            Desde la barra superior o desde el panel de control puede descargar en un clic el inventario completo en formato
+            <strong>CSV normalizado</strong> con codificación UTF-8 BOM, compatible con Microsoft Excel y hojas de cálculo.
+          </p>
+        </div>
+      </ion-accordion>
+    </ion-accordion-group>
+  </div>
+</ion-content>

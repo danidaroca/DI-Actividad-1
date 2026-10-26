@@ -1,0 +1,175 @@
+<ion-content class="register-content" [fullscreen]="true">
+  <div class="register-wrapper">
+    <ion-card class="register-card" role="main" aria-label="Formulario de alta de nuevo usuario">
+      <ion-card-header class="text-center">
+        <div class="brand-badge" aria-hidden="true">
+          <ion-icon name="person-add-outline"></ion-icon>
+        </div>
+        <ion-card-title>Alta de Usuario</ion-card-title>
+        <ion-card-subtitle>Registro en el sistema corporativo</ion-card-subtitle>
+      </ion-card-header>
+
+      <ion-card-content>
+        @if (errorMessage) {
+          <div class="alert-box error" role="alert" aria-live="assertive">
+            <ion-icon name="alert-circle-outline" aria-hidden="true"></ion-icon>
+            <span>{{ errorMessage }}</span>
+          </div>
+        }
+
+        @if (successMessage) {
+          <div class="alert-box success" role="alert" aria-live="polite">
+            <ion-icon name="checkmark-circle-outline" aria-hidden="true"></ion-icon>
+            <span>{{ successMessage }}</span>
+          </div>
+        }
+
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate>
+          <!-- Nombre Completo -->
+          <div class="form-group">
+            <ion-item lines="inset" class="custom-input-item">
+              <ion-icon name="person-outline" slot="start" aria-hidden="true"></ion-icon>
+              <ion-input 
+                formControlName="name" 
+                type="text" 
+                label="Nombre Completo" 
+                labelPlacement="floating"
+                placeholder="Juan Pérez"
+                aria-required="true">
+              </ion-input>
+            </ion-item>
+            @if (name?.invalid && (name?.dirty || name?.touched)) {
+              <div class="validation-feedback" role="alert">
+                @if (name?.errors?.['required']) {
+                  <ion-note color="danger">El nombre es obligatorio.</ion-note>
+                }
+                @if (name?.errors?.['minlength']) {
+                  <ion-note color="danger">Mínimo 3 caracteres requeridos.</ion-note>
+                }
+              </div>
+            }
+          </div>
+
+          <!-- Correo Electrónico con Validación Asíncrona -->
+          <div class="form-group">
+            <ion-item lines="inset" class="custom-input-item">
+              <ion-icon name="mail-outline" slot="start" aria-hidden="true"></ion-icon>
+              <ion-input 
+                formControlName="email" 
+                type="email" 
+                label="Correo Electrónico" 
+                labelPlacement="floating"
+                placeholder="ejemplo@empresa.com"
+                aria-required="true"
+                [attr.aria-busy]="email?.status === 'PENDING'">
+              </ion-input>
+
+              @if (email?.status === 'PENDING') {
+                <ion-spinner name="dots" slot="end" color="primary" aria-label="Validando correo"></ion-spinner>
+              } @else if (email?.valid && email?.touched) {
+                <ion-icon name="checkmark-circle-outline" slot="end" color="success" aria-hidden="true"></ion-icon>
+              } @else if (email?.invalid && email?.touched) {
+                <ion-icon name="close-circle-outline" slot="end" color="danger" aria-hidden="true"></ion-icon>
+              }
+            </ion-item>
+
+            <div class="validation-feedback" role="alert" aria-live="polite">
+              @if (email?.status === 'PENDING') {
+                <ion-note color="primary">Verificando disponibilidad en el servidor...</ion-note>
+              } @else if (email?.errors?.['required'] && (email?.dirty || email?.touched)) {
+                <ion-note color="danger">El correo electrónico es obligatorio.</ion-note>
+              } @else if (email?.errors?.['email'] && (email?.dirty || email?.touched)) {
+                <ion-note color="danger">Formato de correo no válido.</ion-note>
+              } @else if (email?.errors?.['emailTaken']) {
+                <ion-note color="danger">⚠️ Este correo ya está registrado en el sistema.</ion-note>
+              } @else if (email?.valid && email?.touched) {
+                <ion-note color="success">✓ Correo disponible para registro.</ion-note>
+              }
+            </div>
+          </div>
+
+          <!-- Rol del usuario -->
+          <div class="form-group">
+            <ion-item lines="inset" class="custom-input-item">
+              <ion-select 
+                formControlName="role" 
+                label="Rol Asignado" 
+                labelPlacement="floating"
+                interface="popover">
+                <ion-select-option value="STANDARD_USER">Usuario Estándar</ion-select-option>
+                <ion-select-option value="ADMIN">Administrador</ion-select-option>
+              </ion-select>
+            </ion-item>
+          </div>
+
+          <!-- Contraseña -->
+          <div class="form-group">
+            <ion-item lines="inset" class="custom-input-item">
+              <ion-icon name="lock-closed-outline" slot="start" aria-hidden="true"></ion-icon>
+              <ion-input 
+                formControlName="password" 
+                type="password" 
+                label="Contraseña" 
+                labelPlacement="floating"
+                placeholder="••••••••"
+                aria-required="true">
+              </ion-input>
+            </ion-item>
+            @if (password?.invalid && (password?.dirty || password?.touched)) {
+              <div class="validation-feedback" role="alert">
+                @if (password?.errors?.['required']) {
+                  <ion-note color="danger">La contraseña es obligatoria.</ion-note>
+                }
+                @if (password?.errors?.['minlength']) {
+                  <ion-note color="danger">Mínimo 6 caracteres requeridos.</ion-note>
+                }
+              </div>
+            }
+          </div>
+
+          <!-- Confirmar Contraseña -->
+          <div class="form-group">
+            <ion-item lines="inset" class="custom-input-item">
+              <ion-icon name="lock-closed-outline" slot="start" aria-hidden="true"></ion-icon>
+              <ion-input 
+                formControlName="confirmPassword" 
+                type="password" 
+                label="Repetir Contraseña" 
+                labelPlacement="floating"
+                placeholder="••••••••"
+                aria-required="true">
+              </ion-input>
+            </ion-item>
+            @if (registerForm.errors?.['passwordMismatch'] && (confirmPassword?.dirty || confirmPassword?.touched)) {
+              <div class="validation-feedback" role="alert">
+                <ion-note color="danger">Las contraseñas no coinciden.</ion-note>
+              </div>
+            }
+          </div>
+
+          <!-- Botón de Envío -->
+          <ion-button 
+            type="submit" 
+            expand="block" 
+            shape="round" 
+            class="submit-btn" 
+            [disabled]="registerForm.invalid || email?.status === 'PENDING' || isLoading">
+            @if (isLoading) {
+              <ion-spinner name="crescent" slot="start"></ion-spinner>
+              <span>Registrando...</span>
+            } @else {
+              <ion-icon name="person-add-outline" slot="start"></ion-icon>
+              <span>Crear Cuenta</span>
+            }
+          </ion-button>
+        </form>
+
+        <div class="footer-links">
+          <ion-text color="medium">
+            ¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión</a>
+          </ion-text>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

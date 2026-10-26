@@ -1,0 +1,172 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Gestión de Inventario y Registros</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="fetchRecords()" aria-label="Recargar registros">
+        <ion-icon name="refresh-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+      <ion-button (click)="onExportCSV()" aria-label="Exportar a CSV">
+        <ion-icon name="download-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="records-content">
+  <div class="records-container">
+    <!-- Encabezado con acciones -->
+    <div class="records-header">
+      <div>
+        <h1>Catálogo de Registros y Activos</h1>
+        <p>Listado integrado con persistencia dual SQL/NoSQL</p>
+      </div>
+      <div class="records-actions">
+        <ion-button fill="solid" color="primary" (click)="openCreateModal()">
+          <ion-icon name="add-outline" slot="start"></ion-icon>
+          Nuevo Registro
+        </ion-button>
+      </div>
+    </div>
+
+    <!-- Integración del Componente Reutilizable DataTable (Fase 2) -->
+    <app-data-table
+      [data]="records"
+      [columns]="tableColumns"
+      [isLoading]="isLoading"
+      [searchPlaceholder]="'Buscar por nombre, código o categoría...'"
+      [canDelete]="isAdmin"
+      (rowSelect)="onSelectRecord($event)"
+      (rowDelete)="onDeleteRecord($event)"
+      (rowEdit)="onSelectRecord($event)">
+    </app-data-table>
+  </div>
+
+  <!-- Modal Reactivo de Alta de Registro con Validación Asíncrona -->
+  <ion-modal [isOpen]="isModalOpen" (didDismiss)="closeModal()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar color="primary">
+          <ion-title>Alta de Nuevo Registro</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="closeModal()" aria-label="Cerrar modal">
+              <ion-icon name="close-outline" slot="icon-only"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content class="modal-content">
+        <form [formGroup]="recordForm" (ngSubmit)="onSubmitRecord()" class="modal-form" novalidate>
+          <!-- Código con validación asíncrona -->
+          <div class="modal-field">
+            <ion-item lines="inset">
+              <ion-input 
+                formControlName="code" 
+                type="text" 
+                label="Código Único (ej. PROD-004)" 
+                labelPlacement="floating"
+                placeholder="PROD-004">
+              </ion-input>
+              @if (code?.status === 'PENDING') {
+                <ion-spinner name="dots" slot="end" color="primary"></ion-spinner>
+              }
+            </ion-item>
+            <div class="field-feedback" role="alert">
+              @if (code?.status === 'PENDING') {
+                <ion-note color="primary">Comprobando si el código ya existe...</ion-note>
+              } @else if (code?.errors?.['required'] && (code?.dirty || code?.touched)) {
+                <ion-note color="danger">El código es obligatorio.</ion-note>
+              } @else if (code?.errors?.['pattern'] && (code?.dirty || code?.touched)) {
+                <ion-note color="danger">Formato requerido: 3 o 4 letras mayúsculas, guion y 3 números (ej. PROD-004).</ion-note>
+              } @else if (code?.errors?.['codeTaken']) {
+                <ion-note color="danger">⚠️ Este código ya se encuentra en uso.</ion-note>
+              }
+            </div>
+          </div>
+
+          <!-- Nombre -->
+          <div class="modal-field">
+            <ion-item lines="inset">
+              <ion-input 
+                formControlName="name" 
+                type="text" 
+                label="Nombre o Descripción" 
+                labelPlacement="floating">
+              </ion-input>
+            </ion-item>
+            @if (name?.invalid && (name?.dirty || name?.touched)) {
+              <div class="field-feedback" role="alert">
+                <ion-note color="danger">El nombre debe tener al menos 4 caracteres.</ion-note>
+              </div>
+            }
+          </div>
+
+          <!-- Categoría -->
+          <div class="modal-field">
+            <ion-item lines="inset">
+              <ion-select formControlName="category" label="Categoría" labelPlacement="floating" interface="popover">
+                <ion-select-option value="Tecnología">Tecnología</ion-select-option>
+                <ion-select-option value="Mobiliario">Mobiliario</ion-select-option>
+                <ion-select-option value="Servicios">Servicios</ion-select-option>
+                <ion-select-option value="Suministros">Suministros</ion-select-option>
+              </ion-select>
+            </ion-item>
+          </div>
+
+          <!-- Stock y Precio -->
+          <div class="modal-row">
+            <div class="modal-field">
+              <ion-item lines="inset">
+                <ion-input formControlName="stock" type="number" label="Stock Inicial" labelPlacement="floating"></ion-input>
+              </ion-item>
+            </div>
+            <div class="modal-field">
+              <ion-item lines="inset">
+                <ion-input formControlName="price" type="number" label="Precio Unitario (€)" labelPlacement="floating"></ion-input>
+              </ion-item>
+            </div>
+          </div>
+
+          <!-- Estado -->
+          <div class="modal-field">
+            <ion-item lines="inset">
+              <ion-select formControlName="status" label="Estado de Disponibilidad" labelPlacement="floating" interface="popover">
+                <ion-select-option value="DISPONIBLE">DISPONIBLE</ion-select-option>
+                <ion-select-option value="RESERVADO">RESERVADO</ion-select-option>
+                <ion-select-option value="AGOTADO">AGOTADO</ion-select-option>
+              </ion-select>
+            </ion-item>
+          </div>
+
+          <!-- Botones de Acción -->
+          <div class="modal-actions">
+            <ion-button fill="outline" color="medium" (click)="closeModal()">Cancelar</ion-button>
+            <ion-button 
+              type="submit" 
+              color="primary" 
+              [disabled]="recordForm.invalid || code?.status === 'PENDING' || isSubmitting">
+              @if (isSubmitting) {
+                <ion-spinner name="crescent" slot="start"></ion-spinner>
+                <span>Guardando...</span>
+              } @else {
+                <ion-icon name="checkmark-outline" slot="start"></ion-icon>
+                <span>Crear Registro</span>
+              }
+            </ion-button>
+          </div>
+        </form>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <!-- Notificación Toast -->
+  <ion-toast
+    [isOpen]="isToastOpen"
+    [message]="toastMessage || ''"
+    [duration]="3000"
+    (didDismiss)="isToastOpen = false">
+  </ion-toast>
+</ion-content>
