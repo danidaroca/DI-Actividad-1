@@ -1,0 +1,121 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Cuadro de Mando (Dashboard)</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="loadDashboardData()" aria-label="Actualizar métricas">
+        <ion-icon name="refresh-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+      <ion-button (click)="onExportCSV()" aria-label="Descargar informe CSV">
+        <ion-icon name="download-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="dashboard-content">
+  <div class="content-container">
+    <!-- Bienvenida / Contexto -->
+    <div class="dashboard-header" role="banner">
+      <div>
+        <h1>Panel de Control Ejecutivo</h1>
+        <p>Bienvenido, <strong>{{ currentUser?.name }}</strong> (Rol: {{ currentUser?.role }})</p>
+      </div>
+      <div class="header-actions">
+        <ion-button fill="solid" color="secondary" size="small" (click)="onExportCSV()">
+          <ion-icon name="download-outline" slot="start"></ion-icon>
+          Exportar Informe CSV
+        </ion-button>
+      </div>
+    </div>
+
+    <!-- Indicador de carga -->
+    @if (isLoading) {
+      <div class="loading-box" role="status" aria-live="polite">
+        <ion-spinner name="crescent" color="primary"></ion-spinner>
+        <p>Consolidando métricas del sistema...</p>
+      </div>
+    } @else {
+      <!-- Grilla de Componentes Reutilizables StatCard (Fase 2) -->
+      <section aria-label="Indicadores Clave de Rendimiento">
+        <ion-grid class="stats-grid">
+          <ion-row>
+            @for (metric of metrics; track metric.id) {
+              <ion-col size="12" size-sm="6" size-lg="3">
+                <app-stat-card
+                  [title]="metric.title"
+                  [value]="metric.value"
+                  [subtitle]="metric.subtitle"
+                  [changePercentage]="metric.changePercentage"
+                  [trend]="metric.trend || 'neutral'"
+                  [iconName]="metric.iconName || 'layers-outline'"
+                  [colorTheme]="metric.colorTheme || 'primary'"
+                  (cardClick)="onCardClick(metric)">
+                </app-stat-card>
+              </ion-col>
+            }
+          </ion-row>
+        </ion-grid>
+      </section>
+
+      <!-- Actividad y Monitorización en tiempo real NoSQL -->
+      <ion-grid class="main-sections-grid">
+        <ion-row>
+          <ion-col size="12" size-lg="8">
+            <ion-card class="section-card">
+              <ion-card-header>
+                <ion-card-title>Arquitectura y Estado de las Fuentes de Datos</ion-card-title>
+              </ion-card-header>
+              <ion-card-content>
+                <div class="architecture-pills">
+                  <div class="arch-box">
+                    <span class="badge sql">SQL / Relacional</span>
+                    <h4>API REST Transaccional</h4>
+                    <p>Gestión de inventario de activos, productos y control de consistencia.</p>
+                  </div>
+                  <div class="arch-box">
+                    <span class="badge nosql">NoSQL / Firestore</span>
+                    <h4>Flujo de Eventos en Vivo</h4>
+                    <p>Suscripción reactiva mediante Observables a registros de auditoría y logs.</p>
+                  </div>
+                </div>
+
+                <div class="wcag-compliance-note">
+                  <h4>Cumplimiento WCAG 2.1 & WAI-ARIA</h4>
+                  <p>Esta interfaz incorpora contraste óptimo de color, etiquetas semánticas y compatibilidad con lectores de pantalla.</p>
+                </div>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+
+          <ion-col size="12" size-lg="4">
+            <ion-card class="section-card">
+              <ion-card-header>
+                <ion-card-title>Eventos en Tiempo Real (NoSQL)</ion-card-title>
+              </ion-card-header>
+              <ion-card-content class="notifications-content">
+                <ion-list lines="inset">
+                  @for (notif of notifications; track notif.id) {
+                    <ion-item>
+                      <ion-icon 
+                        slot="start" 
+                        [name]="notif.type === 'SUCCESS' ? 'checkmark-circle-outline' : notif.type === 'WARNING' ? 'alert-circle-outline' : 'information-circle-outline'"
+                        [color]="notif.type === 'SUCCESS' ? 'success' : notif.type === 'WARNING' ? 'warning' : 'primary'">
+                      </ion-icon>
+                      <ion-label>
+                        <h3>{{ notif.message }}</h3>
+                        <p>{{ notif.timestamp }}</p>
+                      </ion-label>
+                    </ion-item>
+                  }
+                </ion-list>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    }
+  </div>
+</ion-content>

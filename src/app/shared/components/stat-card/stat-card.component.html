@@ -1,0 +1,39 @@
+<ion-card 
+  class="stat-card" 
+  [ngClass]="'theme-' + colorTheme"
+  role="region" 
+  [attr.aria-label]="title + ': ' + value"
+  tabindex="0"
+  (click)="onTriggerClick()"
+  (keydown)="onKeyDown($event)">
+  <ion-card-content>
+    <div class="stat-header">
+      <span class="stat-title">{{ title }}</span>
+      <div class="stat-icon-wrapper" aria-hidden="true">
+        <ion-icon [name]="iconName"></ion-icon>
+      </div>
+    </div>
+
+    <div class="stat-main">
+      <div class="stat-value">{{ value }}</div>
+    </div>
+
+    <div class="stat-footer">
+      @if (changePercentage !== undefined && changePercentage !== null) {
+        <span 
+          class="trend-badge" 
+          [ngClass]="trend"
+          [attr.aria-label]="'Tendencia ' + (trend === 'up' ? 'positiva' : trend === 'down' ? 'negativa' : 'estable') + ' ' + changePercentage + '%'">
+          <ion-icon 
+            [name]="trend === 'up' ? 'trending-up-outline' : trend === 'down' ? 'trending-down-outline' : 'remove-outline'" 
+            aria-hidden="true">
+          </ion-icon>
+          {{ changePercentage > 0 ? '+' : '' }}{{ changePercentage }}%
+        </span>
+      }
+      @if (subtitle) {
+        <span class="stat-subtitle">{{ subtitle }}</span>
+      }
+    </div>
+  </ion-card-content>
+</ion-card>
