@@ -1,0 +1,104 @@
+.register-content {
+  --background: linear-gradient(135deg, #1f4037 0%, #99f2c8 100%);
+}
+
+.register-wrapper {
+  min-height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+}
+
+.register-card {
+  width: 100%;
+  max-width: 480px;
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.22);
+  background: var(--ion-card-background, #ffffff);
+  padding: 10px 0;
+}
+
+.brand-badge {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 12px;
+  background: rgba(var(--ion-color-success-rgb, 45, 211, 111), 0.15);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  ion-icon {
+    font-size: 32px;
+    color: var(--ion-color-success, #2dd36f);
+  }
+}
+
+.text-center {
+  text-align: center;
+}
+
+.alert-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  font-size: 0.9rem;
+
+  &.error {
+    background-color: rgba(var(--ion-color-danger-rgb, 235, 68, 90), 0.12);
+    border-left: 4px solid var(--ion-color-danger, #eb445a);
+    color: var(--ion-color-danger, #eb445a);
+  }
+
+  &.success {
+    background-color: rgba(var(--ion-color-success-rgb, 45, 211, 111), 0.15);
+    border-left: 4px solid var(--ion-color-success, #2dd36f);
+    color: var(--ion-color-success, #2dd36f);
+  }
+}
+
+.form-group {
+  margin-bottom: 14px;
+
+  .custom-input-item {
+    --border-radius: 10px;
+    --background: var(--ion-color-step-50, #f8f9fa);
+    margin: 0;
+
+    ion-icon {
+      color: var(--ion-color-step-600, #6c757d);
+      margin-right: 8px;
+    }
+  }
+
+  .validation-feedback {
+    padding: 4px 12px;
+    font-size: 0.82rem;
+  }
+}
+
+.submit-btn {
+  margin-top: 18px;
+  height: 48px;
+  font-weight: 600;
+}
+
+.footer-links {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 0.9rem;
+
+  a {
+    color: var(--ion-color-primary, #3880ff);
+    text-decoration: none;
+    font-weight: 600;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

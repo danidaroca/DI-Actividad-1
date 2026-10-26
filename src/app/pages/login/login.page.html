@@ -1,0 +1,113 @@
+<ion-content class="login-content" [fullscreen]="true">
+  <div class="login-wrapper">
+    <ion-card class="login-card" role="main" aria-label="Formulario de inicio de sesión">
+      <ion-card-header class="text-center">
+        <div class="brand-badge" aria-hidden="true">
+          <ion-icon name="shield-checkmark-outline"></ion-icon>
+        </div>
+        <ion-card-title>Sistema de Gestión</ion-card-title>
+        <ion-card-subtitle>Plataforma Empresarial Multiplataforma</ion-card-subtitle>
+      </ion-card-header>
+
+      <ion-card-content>
+        @if (errorMessage) {
+          <div class="error-banner" role="alert" aria-live="assertive">
+            <ion-icon name="alert-circle-outline" aria-hidden="true"></ion-icon>
+            <span>{{ errorMessage }}</span>
+          </div>
+        }
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
+          <!-- Campo Correo Electrónico -->
+          <div class="form-group">
+            <ion-item lines="inset" class="custom-input-item">
+              <ion-icon name="person-outline" slot="start" aria-hidden="true"></ion-icon>
+              <ion-input 
+                formControlName="email" 
+                type="email" 
+                label="Correo Electrónico" 
+                labelPlacement="floating"
+                placeholder="ejemplo@empresa.com"
+                autocomplete="email"
+                aria-required="true"
+                [attr.aria-invalid]="email?.invalid && email?.touched">
+              </ion-input>
+            </ion-item>
+            @if (email?.invalid && (email?.dirty || email?.touched)) {
+              <div class="validation-feedback" role="alert">
+                @if (email?.errors?.['required']) {
+                  <ion-note color="danger">El correo electrónico es obligatorio.</ion-note>
+                }
+                @if (email?.errors?.['email']) {
+                  <ion-note color="danger">Formato de correo inválido.</ion-note>
+                }
+              </div>
+            }
+          </div>
+
+          <!-- Campo Contraseña -->
+          <div class="form-group">
+            <ion-item lines="inset" class="custom-input-item">
+              <ion-icon name="lock-closed-outline" slot="start" aria-hidden="true"></ion-icon>
+              <ion-input 
+                formControlName="password" 
+                type="password" 
+                label="Contraseña" 
+                labelPlacement="floating"
+                placeholder="••••••••"
+                autocomplete="current-password"
+                aria-required="true"
+                [attr.aria-invalid]="password?.invalid && password?.touched">
+              </ion-input>
+            </ion-item>
+            @if (password?.invalid && (password?.dirty || password?.touched)) {
+              <div class="validation-feedback" role="alert">
+                @if (password?.errors?.['required']) {
+                  <ion-note color="danger">La contraseña es obligatoria.</ion-note>
+                }
+                @if (password?.errors?.['minlength']) {
+                  <ion-note color="danger">Mínimo 4 caracteres requeridos.</ion-note>
+                }
+              </div>
+            }
+          </div>
+
+          <!-- Botón de Envío -->
+          <ion-button 
+            type="submit" 
+            expand="block" 
+            shape="round" 
+            class="submit-btn" 
+            [disabled]="isLoading">
+            @if (isLoading) {
+              <ion-spinner name="crescent" slot="start"></ion-spinner>
+              <span>Autenticando...</span>
+            } @else {
+              <ion-icon name="log-in-outline" slot="start"></ion-icon>
+              <span>Iniciar Sesión</span>
+            }
+          </ion-button>
+        </form>
+
+        <!-- Accesos rápidos de prueba (Evaluación) -->
+        <div class="demo-credentials" role="region" aria-label="Credenciales de prueba para evaluación">
+          <p class="demo-title">Credenciales de prueba rápidas:</p>
+          <div class="demo-buttons">
+            <ion-button fill="outline" size="small" color="tertiary" (click)="fillAdmin()">
+              Cargar Administrador
+            </ion-button>
+            <ion-button fill="outline" size="small" color="medium" (click)="fillStandardUser()">
+              Cargar Usuario Estándar
+            </ion-button>
+          </div>
+        </div>
+
+        <div class="footer-links">
+          <ion-text color="medium">
+            ¿No tienes cuenta? <a routerLink="/register">Regístrate aquí</a>
+          </ion-text>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

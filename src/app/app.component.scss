@@ -1,0 +1,112 @@
+ion-menu ion-content {
+  --background: var(--ion-item-background, var(--ion-background-color, #fff));
+}
+
+.menu-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 16px 16px;
+  border-bottom: 1px solid var(--ion-color-step-150, #eee);
+
+  .brand-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: var(--ion-color-primary, #3880ff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 1.5rem;
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--ion-color-dark, #222);
+  }
+
+  .sub-version {
+    font-size: 0.75rem;
+    color: var(--ion-color-step-500, #888);
+  }
+}
+
+.user-profile-widget {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: var(--ion-color-step-50, #f8fafc);
+  margin: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--ion-color-step-150, #e2e8f0);
+
+  .user-avatar {
+    font-size: 40px;
+    color: var(--ion-color-primary, #3880ff);
+  }
+
+  .user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    .user-name {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--ion-color-dark, #1e293b);
+    }
+
+    .user-email {
+      font-size: 0.78rem;
+      color: var(--ion-color-step-600, #64748b);
+    }
+
+    .role-badge {
+      width: fit-content;
+      font-size: 0.68rem;
+      margin-top: 4px;
+      letter-spacing: 0.5px;
+    }
+  }
+}
+
+ion-list {
+  padding: 12px 8px;
+
+  ion-list-header {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--ion-color-step-500, #94a3b8);
+    margin-bottom: 6px;
+    padding-left: 12px;
+  }
+
+  ion-item {
+    --border-radius: 8px;
+    margin-bottom: 4px;
+    font-weight: 500;
+    font-size: 0.95rem;
+
+    &.selected {
+      --background: rgba(var(--ion-color-primary-rgb, 56, 128, 255), 0.12);
+      --color: var(--ion-color-primary, #3880ff);
+      font-weight: 600;
+
+      ion-icon {
+        color: var(--ion-color-primary, #3880ff);
+      }
+    }
+  }
+}
+
+.menu-footer {
+  margin-top: 40px;
+  padding: 16px;
+  border-top: 1px solid var(--ion-color-step-150, #eee);
+}
