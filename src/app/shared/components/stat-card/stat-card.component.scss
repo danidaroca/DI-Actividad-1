@@ -1,0 +1,119 @@
+.stat-card {
+  margin: 0;
+  border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+  outline: none;
+
+  &:focus-visible {
+    outline: 2px solid var(--ion-color-primary, #3880ff);
+    outline-offset: 2px;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  }
+
+  ion-card-content {
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+.stat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .stat-title {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--ion-color-step-600, #666);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .stat-icon-wrapper {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+  }
+}
+
+.stat-main {
+  .stat-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--ion-color-dark, #1f1f1f);
+    line-height: 1.2;
+  }
+}
+
+.stat-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  margin-top: 4px;
+
+  .trend-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 2px 7px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.78rem;
+
+    &.up {
+      background-color: rgba(var(--ion-color-success-rgb, 45, 211, 111), 0.15);
+      color: var(--ion-color-success, #2dd36f);
+    }
+    &.down {
+      background-color: rgba(var(--ion-color-danger-rgb, 235, 68, 90), 0.15);
+      color: var(--ion-color-danger, #eb445a);
+    }
+    &.neutral {
+      background-color: rgba(var(--ion-color-medium-rgb, 146, 153, 162), 0.15);
+      color: var(--ion-color-medium, #9299a2);
+    }
+  }
+
+  .stat-subtitle {
+    color: var(--ion-color-step-500, #777);
+  }
+}
+
+/* Temas de colores */
+.theme-primary .stat-icon-wrapper {
+  background-color: rgba(var(--ion-color-primary-rgb, 56, 128, 255), 0.15);
+  color: var(--ion-color-primary, #3880ff);
+}
+
+.theme-success .stat-icon-wrapper {
+  background-color: rgba(var(--ion-color-success-rgb, 45, 211, 111), 0.15);
+  color: var(--ion-color-success, #2dd36f);
+}
+
+.theme-warning .stat-icon-wrapper {
+  background-color: rgba(var(--ion-color-warning-rgb, 255, 196, 9), 0.18);
+  color: var(--ion-color-warning, #ffc409);
+}
+
+.theme-danger .stat-icon-wrapper {
+  background-color: rgba(var(--ion-color-danger-rgb, 235, 68, 90), 0.15);
+  color: var(--ion-color-danger, #eb445a);
+}
+
+.theme-tertiary .stat-icon-wrapper {
+  background-color: rgba(var(--ion-color-tertiary-rgb, 112, 68, 255), 0.15);
+  color: var(--ion-color-tertiary, #7044ff);
+}

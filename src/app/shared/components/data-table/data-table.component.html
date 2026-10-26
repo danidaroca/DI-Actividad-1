@@ -1,0 +1,134 @@
+<div class="data-table-container">
+  <!-- Barra de control: Buscador y Filtro -->
+  <div class="table-controls" role="search" aria-label="Controles de búsqueda y filtrado">
+    <div class="search-wrapper">
+      <ion-searchbar 
+        [placeholder]="searchPlaceholder" 
+        [debounce]="250"
+        (ionInput)="onSearch($event)"
+        aria-label="Buscar en la tabla">
+      </ion-searchbar>
+    </div>
+
+    @if (categories().length > 0) {
+      <div class="filter-wrapper">
+        <ion-select 
+          interface="popover" 
+          placeholder="Categoría" 
+          value="ALL"
+          (ionChange)="onCategoryChange($event)"
+          aria-label="Filtrar por categoría">
+          <ion-select-option value="ALL">Todas las categorías</ion-select-option>
+          @for (cat of categories(); track cat) {
+            <ion-select-option [value]="cat">{{ cat }}</ion-select-option>
+          }
+        </ion-select>
+      </div>
+    }
+  </div>
+
+  <!-- Estado de carga -->
+  @if (isLoading) {
+    <div class="loading-state" role="status" aria-live="polite">
+      <ion-spinner name="crescent" color="primary"></ion-spinner>
+      <p>Cargando información del sistema...</p>
+    </div>
+  } @else {
+    <!-- Contenedor responsive con scroll horizontal -->
+    <div class="responsive-table-scroll">
+      <table class="custom-table" role="table" aria-label="Tabla de datos empresariales">
+        <thead>
+          <tr role="row">
+            @for (col of columns; track col.key) {
+              <th scope="col" role="columnheader">{{ col.label }}</th>
+            }
+            @if (showActions) {
+              <th scope="col" role="columnheader" class="actions-col">Acciones</th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @if (paginatedData().length === 0) {
+            <tr>
+              <td [attr.colspan]="columns.length + (showActions ? 1 : 0)" class="empty-cell" role="cell">
+                {{ emptyMessage }}
+              </td>
+            </tr>
+          } @else {
+            @for (row of paginatedData(); track row.id || row.code) {
+              <tr 
+                role="row" 
+                tabindex="0"
+                (click)="onRowClick(row)"
+                (keydown.enter)="onRowClick(row)">
+                @for (col of columns; track col.key) {
+                  <td role="cell" [attr.data-label]="col.label">
+                    @if (col.type === 'currency') {
+                      <strong>{{ row[col.key] | number:'1.2-2' }} €</strong>
+                    } @else if (col.type === 'badge') {
+                      <ion-badge [color]="getBadgeColor(row[col.key])">
+                        {{ row[col.key] }}
+                      </ion-badge>
+                    } @else {
+                      {{ row[col.key] }}
+                    }
+                  </td>
+                }
+
+                @if (showActions) {
+                  <td role="cell" class="actions-cell">
+                    @if (canEdit) {
+                      <ion-button 
+                        fill="clear" 
+                        size="small" 
+                        color="primary"
+                        aria-label="Editar registro"
+                        (click)="onEditClick($event, row)">
+                        <ion-icon name="create-outline" slot="icon-only"></ion-icon>
+                      </ion-button>
+                    }
+                    @if (canDelete) {
+                      <ion-button 
+                        fill="clear" 
+                        size="small" 
+                        color="danger"
+                        aria-label="Eliminar registro"
+                        (click)="onDeleteClick($event, row)">
+                        <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+                      </ion-button>
+                    }
+                  </td>
+                }
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Paginador -->
+    <div class="pagination-footer" aria-label="Controles de paginación">
+      <span class="pagination-info">
+        Página {{ currentPage() }} de {{ totalPages() }} ({{ filteredData().length }} registros)
+      </span>
+      <div class="pagination-buttons">
+        <ion-button 
+          fill="outline" 
+          size="small" 
+          [disabled]="currentPage() === 1"
+          (click)="prevPage()"
+          aria-label="Página anterior">
+          <ion-icon name="chevron-back-outline" slot="icon-only"></ion-icon>
+        </ion-button>
+        <ion-button 
+          fill="outline" 
+          size="small" 
+          [disabled]="currentPage() === totalPages()"
+          (click)="nextPage()"
+          aria-label="Página siguiente">
+          <ion-icon name="chevron-forward-outline" slot="icon-only"></ion-icon>
+        </ion-button>
+      </div>
+    </div>
+  }
+</div>
