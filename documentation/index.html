@@ -210,7 +210,7 @@
 </li>
 <li><strong>Paso 5.3 - Despliegue en Producción y CI/CD:</strong><ul>
 <li>Configuración para despliegue en <strong>Vercel</strong> (<code>vercel.json</code>) con redirecciones SPA y cabeceras de seguridad.</li>
-<li>Pipeline automatizado de integración continua con <strong>GitHub Actions</strong> (<code>.github/workflows/ci.yml</code>) que valida tests, compila con Compodoc y genera el artefacto en <code>www/</code>.</li>
+<li>Pipeline automatizado de integración continua con <strong>GitHub Actions</strong> (<code>ci/workflows/ci.yml</code>) que valida tests, compila con Compodoc y genera el artefacto en <code>www/</code>.</li>
 </ul>
 </li>
 </ul>
@@ -255,7 +255,46 @@ npm run compodoc:serve</code></pre></div></li>
 </li>
 </ol>
 <hr>
-<h2>🌿 6. Estructura de Ramas (Git Flow)</h2>
+<h2>🛡️ 6. Memoria de Arquitectura de Seguridad y Control de Acceso (Hito Previo)</h2>
+<p>El proyecto incluye la documentación técnica completa requerida para el <strong>Requerimiento Previo a la Entrega Oficial</strong> sobre seguridad y control de acceso:</p>
+<ul>
+<li><strong>Documento Técnico en PDF (4 páginas):</strong> <a href="Memoria_Seguridad_Ionic_Daroca_Daniel.pdf">Memoria_Seguridad_Ionic_Daroca_Daniel.pdf</a></li>
+<li><strong>Memoria en Markdown en el Repositorio:</strong> <a href="docs/security-architecture.md">docs/security-architecture.md</a></li>
+</ul>
+<h3>Aspectos Clave Implementados:</h3>
+<ol>
+<li><strong>Functional Guards (CanMatchFn frente a CanActivateFn):</strong><ul>
+<li>Implementación en src/app/core/guards/auth.guard.ts y 
+ole.guard.ts.</li>
+<li>canMatch previene la descarga del bundle JavaScript del componente lazy si el usuario no tiene permisos (Zero-Leakage y ahorro de ancho de banda móvil).</li>
+<li>canActivate valida estado en memoria y gestiona la redirección contextual con 
+eturnUrl.</li>
+</ul>
+</li>
+<li><strong>Functional HTTP Interceptors (HttpInterceptorFn):</strong><ul>
+<li>uthInterceptor inyecta de forma inmutable la cabecera Authorization: Bearer <token>.</li>
+<li>errorInterceptor gestiona de forma centralizada errores 401 Unauthorized (renovación reactiva o cierre de sesión) y 403 Forbidden (bloqueo por RBAC).</li>
+<li>Registrados en src/main.ts mediante provideHttpClient(withInterceptors([authInterceptor, errorInterceptor])).</li>
+</ul>
+</li>
+<li><strong>Control de Acceso Basado en Roles (RBAC) con Signals:</strong><ul>
+<li>Modelo formal  \to Rol \to Permisos$ con claims estructurados en el payload JWT (sub, 
+ole, permissions, exp).</li>
+<li>Desacoplamiento de estado en AuthService mediante Angular Signals (currentUserSignal, isAdminSignal).</li>
+</ul>
+</li>
+<li><strong>Control Visual UI/UX Condicional:</strong><ul>
+<li>Ocultación en plantilla del menú lateral (pp.component.html) para rutas exclusivas de administrador (/dashboard).</li>
+<li>Desactivación condicional del botón de borrado en <app-data-table> mediante @Input() canDelete.</li>
+</ul>
+</li>
+<li><strong>Matriz Comparativa de Alternativas:</strong><ul>
+<li>Análisis fundamentado en seguridad, sobrecarga de red, mantenibilidad y escalabilidad frente a comprobaciones en componente, inyección manual y flags booleanos simples.</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2>🌿 7. Estructura de Ramas (Git Flow)</h2>
 <p>El desarrollo ha seguido la metodología profesional <strong>Git Flow</strong>:</p>
 <ul>
 <li><code>main</code>: Rama de entrega final y código en producción.</li>
