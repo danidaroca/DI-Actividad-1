@@ -18,7 +18,7 @@ import {
   IonIcon
 } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { helpCircleOutline, shieldOutline, documentTextOutline, searchOutline, downloadOutline } from 'ionicons/icons';
+import { helpCircleOutline, shieldOutline, documentTextOutline, searchOutline, downloadOutline, pieChartOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-help',
@@ -46,6 +46,6 @@ import { helpCircleOutline, shieldOutline, documentTextOutline, searchOutline, d
 })
 export class HelpPage {
   constructor() {
-    addIcons({ helpCircleOutline, shieldOutline, documentTextOutline, searchOutline, downloadOutline });
+    addIcons({ helpCircleOutline, shieldOutline, documentTextOutline, searchOutline, downloadOutline, pieChartOutline });
   }
 }

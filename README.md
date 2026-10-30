@@ -2,135 +2,160 @@
 
 **Módulo Profesional:** Desarrollo de Interfaces (Código: 0488)  
 **Ciclo Formativo:** Grado Superior en Desarrollo de Aplicaciones Multiplataforma (DAM)  
-**Actividad:** Actividad Individual 1 - Proyecto de Evaluación Práctica  
+**Actividad:** Actividad Individual 1 - Proyecto de Evaluación Práctica (Entregable Final)  
+**Autor:** Daniel Daroca  
+**Repositorio GitHub:** [https://github.com/danidaroca/DI-Actividad-1](https://github.com/danidaroca/DI-Actividad-1)  
 
 ---
 
-## 📌 1. Descripción del Proyecto
+## 📌 1. Descripción General del Proyecto
 
-Aplicación de gestión empresarial multiplataforma desarrollada desde cero con **Ionic Framework** y **Angular (Standalone Architecture)**, implementando una arquitectura desacoplada basada en servicios reactivos con RxJS y Angular Signals, control de acceso basado en roles (RBAC) y directrices de accesibilidad WCAG.
+Aplicación de gestión empresarial multiplataforma desarrollada desde cero utilizando el framework **Ionic 9** sobre arquitectura **Angular 22 (Standalone Components)**. 
 
-Este repositorio contiene la base arquitectónica fundamental, la navegación declarativa y los componentes visuales reutilizables solicitados en las fases iniciales del proyecto.
+El proyecto implementa una arquitectura desacoplada y robusta, consumo asíncrono de orígenes duales de datos (API REST SQL relacional + Servicio de eventos en tiempo real NoSQL/Firestore mockeado mediante `BehaviorSubject`), control de acceso estricto basado en roles (RBAC con `authGuard` y `roleGuard`), dashboard ejecutivo interactivo con gráficos **Chart.js**, generación y descarga de informes tabulados oficiales en **PDF y CSV**, cumplimiento integral de normativas de accesibilidad **WCAG 2.1**, documentación técnica automatizada con **Compodoc** y pipeline de integración continua **CI/CD** con despliegue en la nube.
 
 ---
 
 ## 🏗️ 2. Arquitectura del Software
 
-El proyecto sigue una arquitectura modular y reactiva:
-
 ```
 src/
 ├── app/
-│   ├── core/                           # Servicios singleton, modelos y seguridad
+│   ├── core/                           # Capa singleton: servicios, modelos y seguridad
 │   │   ├── guards/
-│   │   │   ├── auth.guard.ts           # Protección de rutas privadas
-│   │   │   └── role.guard.ts           # Control de acceso según rol (RBAC)
+│   │   │   ├── auth.guard.ts           # Protección de rutas privadas (redirección a login)
+│   │   │   └── role.guard.ts           # Control de acceso por roles (ADMIN vs STANDARD)
 │   │   ├── models/
-│   │   │   ├── user.model.ts           # Modelos de usuario, roles y credenciales
-│   │   │   ├── record.model.ts         # Entidades de inventario y eventos
-│   │   │   └── metric.model.ts         # Métricas de cuadro de mando
+│   │   │   ├── user.model.ts           # Modelos de usuario, credenciales y roles
+│   │   │   ├── record.model.ts         # Entidades de inventario y notificaciones
+│   │   │   └── metric.model.ts         # Métricas KPI consolidadas
 │   │   └── services/
-│   │       ├── auth.service.ts         # Autenticación, JWT sintético y sesiones
-│   │       ├── async-validator.service.ts # Validaciones asíncronas contra backend
-│   │       └── data.service.ts         # Consumo dual (API REST SQL + NoSQL en vivo)
+│   │       ├── auth.service.ts         # Autenticación, JWT sintético y sesiones reactivas
+│   │       ├── async-validator.service.ts # Validaciones asíncronas contra backend simulado
+│   │       └── data.service.ts         # Consumo dual (SQL + NoSQL), forkJoin, exportación PDF/CSV
 │   ├── pages/                          # Vistas enrutadas con Carga Diferida (Lazy Loading)
-│   │   ├── login/                      # Formulario reactivo de inicio de sesión
-│   │   ├── register/                   # Alta con validación asíncrona de email
-│   │   ├── dashboard/                  # Cuadro de mando ejecutivo (solo ADMIN)
-│   │   ├── records/                    # Gestión de registros/inventario con modal de alta
-│   │   └── help/                       # Manual de usuario embebido en la aplicación
+│   │   ├── login/                      # Formulario reactivo de login con botones demo
+│   │   ├── register/                   # Formulario de alta con validación asíncrona de email
+│   │   ├── dashboard/                  # Cuadro de mando con Chart.js y filtros en tiempo real (ADMIN)
+│   │   ├── records/                    # Gestión de inventario, modal reactivo y exportación
+│   │   └── help/                       # Manual de usuario interactivo embebido
 │   └── shared/                         # Componentes reutilizables e independientes
 │       └── components/
-│           ├── stat-card/              # Widget de métricas/KPI (Paso 2.1)
-│           └── data-table/             # Tabla avanzada con buscador y filtro (Paso 2.1)
+│           ├── stat-card/              # Widget KPI instanciable (@Input/@Output, OnPush)
+│           └── data-table/             # Tabla avanzada con buscador, filtros y Signals
+├── assets/                             # Recursos estáticos e iconos
+└── theme/                              # Variables y estilos globales de diseño
 ```
 
 ---
 
-## 🚀 3. Estado de Ejecución de las Fases
+## 🚀 3. Estado de Ejecución de las Fases (100% Completadas)
 
-Tal como se ha planificado para esta entrega de desarrollo, se han completado las fases estructurales clave y dejado preparados los cimientos para las siguientes:
-
-### ✅ FASE 1: Estructuración y Renderizado Declarativo (COMPLETADA)
-* **Paso 1.1 - Enrutamiento y Navegación:**
-  * Navegación global con menú lateral interactivo (`Side Menu`) y carga diferida (`Lazy Loading`) mediante `loadComponent()`.
-  * Protección de rutas mediante `authGuard` y `roleGuard`.
-  * Diferenciación de vistas según dos roles: **Administrador** y **Usuario Estándar**.
+### ✅ FASE 1: Estructuración y Renderizado Declarativo (RA 1 y RA 2)
+* **Paso 1.1 - Sistema de Enrutamiento y Navegación:**
+  * Menú lateral responsivo (`Side Menu`) interactivo con carga diferida (`Lazy Loading` mediante `loadComponent`).
+  * Protección robusta de rutas mediante `authGuard` y `roleGuard`.
+  * Control de acceso por roles: **Administrador** (acceso total + Cuadro de Mando) y **Usuario Estándar** (catálogo e inventario).
 * **Paso 1.2 - Formularios y Validaciones Asíncronas:**
-  * Formulario reactivo de **Login** con gestión de errores declarativa.
-  * Formulario reactivo de **Alta de Usuario** con **validación asíncrona** en tiempo real (`AsyncValidatorService`) que consulta la existencia previa del correo en base de datos.
-  * Formulario de **Alta de Registros** con validación asíncrona de código de producto y patrón regex.
-  * Feedback visual adaptativo con estados `PENDING` (spinner), `valid` e `invalid`.
+  * Formulario reactivo de **Login** con gestión de errores UX declarativa.
+  * Formulario reactivo de **Alta de Usuario** con **validación asíncrona** en tiempo real (`AsyncValidatorService`) que comprueba la existencia de correo en base de datos con indicador `PENDING` (spinner), validación positiva (check verde) y control de duplicados.
+  * Formulario de **Alta de Registros** con validación asíncrona de código único de producto (`PROD-XXX`) y validaciones síncronas de formato.
 
-### ✅ FASE 2: Componentización Visual y Lógica de Negocio (COMPLETADA)
-* **Paso 2.1 - Componentes Personalizados Reutilizables:**
-  * `<app-stat-card>`: Widget estadístico/KPI modular para representar valores consolidados, porcentajes de tendencia y temáticas de color.
-  * `<app-data-table>`: Tabla de datos agnóstica con barra de búsqueda instantánea, selector de categorías dinámico, paginación y columnas tipadas.
+### ✅ FASE 2: Componentización Visual y Lógica de Negocio (RA 3)
+* **Paso 2.1 - Componentes Personalizados:**
+  * `<app-stat-card>`: Widget estadístico/KPI modular para representar valores consolidados, porcentajes de variación, indicadores de tendencia y temas cromáticos.
+  * `<app-data-table>`: Tabla de datos agnóstica con buscador reactivo instantáneo, filtro por categorías, paginación y columnas dinámicas tipadas.
 * **Paso 2.2 - Gestión de Estado y Eventos:**
-  * Componentes desacoplados e independientes de la vista padre.
-  * Comunicación unidireccional estricta mediante `@Input()` / Signals y emisión de eventos mediante `@Output()` (`rowSelect`, `rowDelete`, `rowEdit`, `cardClick`).
+  * Componentes totalmente independientes del contenedor padre con estrategia `ChangeDetectionStrategy.OnPush`.
+  * Paso de datos declarativo vía `@Input()` / Signals y emisión desacoplada mediante `@Output()` (`rowSelect`, `rowDelete`, `rowEdit`, `cardClick`).
 
-### 🟡 FASE 3: Consumo de Datos y Reportes (PARCIALMENTE IMPLEMENTADA)
-* **Implementado:** Simulación de consumo dual (`data.service.ts` con API REST relacional SQL y flujo reactivo en tiempo real NoSQL / Firestore mediante `BehaviorSubject`), y función de **exportación de informes tabulados a CSV**.
-* **Pendiente para siguientes entregas:** Gráficos visuales avanzados con librería externa (Chart.js) y exportación a PDF con motor de maquetación.
+### ✅ FASE 3: Consumo de Datos y Generación de Informes (RA 5)
+* **Paso 3.1 - Concurrencia y Asincronía:**
+  * Simulación de consumo dual: API REST relacional (SQL) para inventario transaccional y servicio en tiempo real NoSQL (Firestore Mock) basado en `BehaviorSubject` para auditoría y logs.
+  * Orquestación asíncrona avanzada mediante **RxJS `forkJoin`** con control de spinners de carga y gestión de errores.
+* **Paso 3.2 - Dashboard Interactivo con Chart.js:**
+  * Gráficos visuales dinámicos de **Barras** (Stock/Valor por categoría) y **Doughnut** (Cuota económica de activos).
+  * Filtro interactivo en tiempo real que permite conmutar entre "Unidades en Stock" y "Valoración Económica (€)" recalculando la visualización al instante.
+  * Ciclo de vida optimizado con destrucción explícita de instancias en `ngOnDestroy` para evitar memory leaks.
+* **Paso 3.3 - Exportación de Datos:**
+  * **Exportación a PDF Oficial:** Generación en cliente con `jsPDF` y `jspdf-autotable`, incluyendo membrete institucional, tarjetas resumen KPI, tabla formateada con colores semánticos y paginación automática.
+  * **Exportación a CSV Normalizado:** Archivo delimitado con cabeceras estándar y codificación `UTF-8 BOM` para compatibilidad directa con Excel.
 
-### 🟡 FASE 4: Usabilidad y Accesibilidad (INTEGRADA)
-* Enfoque **Mobile-First** con diseño fluido y responsivo en móviles, tablets y monitores.
-* Atributos semánticos `WAI-ARIA` (`role="table"`, `role="region"`, `aria-label`, `aria-busy`, `aria-live`) y navegación completa por teclado (`tabindex` lógico y eventos de tecla Enter).
+### ✅ FASE 4: Usabilidad, Accesibilidad y Calidad (RA 4)
+* **Paso 4.1 - Diseño Adaptativo (Responsive):**
+  * Enfoque **Mobile-First** con adaptación anatómica fluida para smartphones, tablets y pantallas de escritorio.
+* **Paso 4.2 - Cumplimiento WCAG y WAI-ARIA:**
+  * Contraste de color reglamentario, tipografía escalable, control total de navegación mediante teclado (`tabindex='0'` y eventos de tecla Enter) y atributos semánticos `WAI-ARIA` (`role="table"`, `role="region"`, `aria-label`, `aria-busy`, `aria-live`).
 
-### 🟡 FASE 5: Control de Versiones y Despliegue
-* **Implementado:** Inicialización íntegra con **Git Flow** (ramas `main`, `develop` y feature branches: `feature/fase1-enrutamiento-auth` y `feature/fase2-componentes`).
-* **Pendiente para siguientes entregas:** Pipeline CI/CD automático y hosting en la nube (Vercel/Firebase).
+### ✅ FASE 5: Documentación, Control de Versiones y Despliegue (RA 6 y RA 7)
+* **Paso 5.1 - Control de Versiones Git Flow:**
+  * Historial íntegro de commits y ramas estructuradas: `main`, `develop`, `feature/fase1-enrutamiento-auth`, `feature/fase2-componentes`, `feature/fase3-dashboard-informes` y `feature/fase5-compodoc-ci`.
+* **Paso 5.2 - Documentación Técnica y de Usuario:**
+  * Documentación técnica generada automáticamente con **Compodoc** en la carpeta `documentation/`.
+  * Manual de usuario interactivo embebido en la aplicación en la ruta `/help` y redactado exhaustivamente en este `README.md`.
+* **Paso 5.3 - Despliegue en Producción y CI/CD:**
+  * Configuración para despliegue en **Vercel** (`vercel.json`) con redirecciones SPA y cabeceras de seguridad.
+  * Pipeline automatizado de integración continua con **GitHub Actions** (`ci/workflows/ci.yml`) que valida tests, compila con Compodoc y genera el artefacto en `www/`.
 
 ---
 
 ## 🔑 4. Credenciales de Acceso de Prueba
 
-La pantalla de login incluye botones de carga rápida con un solo clic para facilitar la corrección:
+La pantalla de login (`/login`) cuenta con botones de **autocompletado en un solo clic** para agilizar la corrección docente:
 
-| Rol | Correo Electrónico | Contraseña | Permisos |
+| Rol | Correo Electrónico | Contraseña | Vistas y Funcionalidades Accesibles |
 | :--- | :--- | :--- | :--- |
-| **Administrador** | `admin@empresa.com` | `Admin123!` | Acceso total: Cuadro de Mando, Gestión, Borrado y Exportación |
-| **Usuario Estándar** | `user@empresa.com` | `User123!` | Acceso limitado: Consulta de registros, altas y manual de ayuda |
+| **Administrador** | `admin@empresa.com` | `Admin123!` | Acceso completo: Cuadro de Mando con Chart.js, Gestión de Inventario, Altas, Borrado de artículos, Exportación PDF/CSV y Manual de ayuda. |
+| **Usuario Estándar** | `user@empresa.com` | `User123!` | Acceso operativo: Catálogo de Inventario, Alta de nuevos productos, Exportación de informes y Manual de ayuda. *(Ruta `/dashboard` protegida por `roleGuard`)*. |
 
 ---
 
 ## 💻 5. Instalación y Ejecución Local
 
 ### Prerrequisitos
-* **Node.js** (v18+)
-* **NPM** (v9+)
-* **Ionic CLI** (`npm install -g @ionic/cli`)
+* **Node.js** (v18 o superior)
+* **NPM** (v9 o superior)
+* **Ionic CLI** (opcional, `npm install -g @ionic/cli`)
 
-### Pasos
-1. Clonar el repositorio:
+### Instrucciones
+1. **Clonar el repositorio:**
    ```bash
    git clone https://github.com/danidaroca/DI-Actividad-1.git
    cd DI-Actividad-1
    ```
-2. Instalar dependencias:
+2. **Instalar dependencias:**
    ```bash
    npm install
    ```
-3. Iniciar el servidor de desarrollo local:
+3. **Ejecutar el servidor de desarrollo:**
    ```bash
-   ionic serve
-   # o bien:
    npm start
+   # o bien mediante Ionic:
+   ionic serve
    ```
-4. Abrir en el navegador: [http://localhost:8100](http://localhost:8100)
+   Acceder desde el navegador a: [http://localhost:8100](http://localhost:8100)
 
-### Compilación para Producción
-```bash
-npm run build
-```
-Los archivos optimizados para producción se generan en la carpeta `www/`.
+4. **Generar la documentación técnica con Compodoc:**
+   ```bash
+   npm run compodoc:build
+   # Para visualizar la documentación interactiva en el puerto 8080:
+   npm run compodoc:serve
+   ```
+
+5. **Compilar para producción:**
+   ```bash
+   npm run build
+   ```
+   El artefacto compilado y optimizado se genera en el directorio `www/`.
 
 ---
 
 ## 🌿 6. Estructura de Ramas (Git Flow)
 
-* `main`: Código estable y validado para entrega.
-* `develop`: Rama principal de integración y desarrollo.
-* `feature/fase1-enrutamiento-auth`: Base arquitectónica, enrutamiento lazy loading, guards y formularios con validación asíncrona.
-* `feature/fase2-componentes`: Creación de componentes modulares (`StatCard` y `DataTable`) e integración de fuentes de datos.
+El desarrollo ha seguido la metodología profesional **Git Flow**:
+* `main`: Rama de entrega final y código en producción.
+* `develop`: Rama de integración de características.
+* `feature/fase1-enrutamiento-auth`: Enrutamiento lazy loading, guards y validación asíncrona.
+* `feature/fase2-componentes`: Componentes agnósticos modulares (`StatCard` y `DataTable`).
+* `feature/fase3-dashboard-informes`: Dashboard interactivo con Chart.js, forkJoin y exportación PDF/CSV.
+* `feature/fase5-compodoc-ci`: Compodoc, pipeline de GitHub Actions y configuración Vercel.
