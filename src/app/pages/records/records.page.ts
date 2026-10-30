@@ -21,7 +21,15 @@ import {
   IonToast
 } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { addOutline, downloadOutline, refreshOutline, closeOutline, checkmarkOutline, cubeOutline } from 'ionicons/icons';
+import { 
+  addOutline, 
+  downloadOutline, 
+  refreshOutline, 
+  closeOutline, 
+  checkmarkOutline, 
+  cubeOutline,
+  documentTextOutline
+} from 'ionicons/icons';
 import { DataService } from '../../core/services/data.service';
 import { AuthService } from '../../core/services/auth.service';
 import { AsyncValidatorService } from '../../core/services/async-validator.service';
@@ -91,7 +99,8 @@ export class RecordsPage implements OnInit {
       refreshOutline,
       closeOutline,
       checkmarkOutline,
-      cubeOutline
+      cubeOutline,
+      documentTextOutline
     });
 
     this.recordForm = this.fb.group({
@@ -184,6 +193,12 @@ export class RecordsPage implements OnInit {
 
   onExportCSV(): void {
     this.dataService.exportRecordsToCSV();
+    this.showToast('Informe CSV descargado correctamente.');
+  }
+
+  onExportPDF(): void {
+    this.dataService.exportRecordsToPDF();
+    this.showToast('Informe tabulado oficial en PDF generado y descargado.');
   }
 
   private showToast(msg: string): void {
