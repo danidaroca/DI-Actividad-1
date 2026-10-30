@@ -5,6 +5,17 @@
 **Actividad:** Actividad Individual 1 - Proyecto de Evaluación Práctica (Entregable Final)  
 **Autor:** Daniel Daroca  
 **Repositorio GitHub:** [https://github.com/danidaroca/DI-Actividad-1](https://github.com/danidaroca/DI-Actividad-1)  
+**Despliegue en Producción (Vercel):** [https://di-actividad-1.vercel.app](https://di-actividad-1.vercel.app)  
+
+---
+
+## 📦 Entregables Oficiales del Proyecto
+
+1. **Memoria Técnica en PDF (Actividad 1):** [`MEMORIA_TECNICA_ACTIVIDAD_1.pdf`](MEMORIA_TECNICA_ACTIVIDAD_1.pdf)
+2. **Enlace al Repositorio en GitHub:** [https://github.com/danidaroca/DI-Actividad-1](https://github.com/danidaroca/DI-Actividad-1)
+3. **Enlace a la Aplicación en Vercel:** [https://di-actividad-1.vercel.app](https://di-actividad-1.vercel.app)
+4. **Manual de Usuario:** [`MANUAL_DE_USUARIO.pdf`](MANUAL_DE_USUARIO.pdf) (y sección [`docs/MANUAL_DE_USUARIO.md`](docs/MANUAL_DE_USUARIO.md))
+5. **Anexo de Seguridad (RBAC & Guards):** [`Memoria_Seguridad_Ionic_Daroca_Daniel.pdf`](Memoria_Seguridad_Ionic_Daroca_Daniel.pdf) (y sección [`docs/security-architecture.md`](docs/security-architecture.md))
 
 ---
 

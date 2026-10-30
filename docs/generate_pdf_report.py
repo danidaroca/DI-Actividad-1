@@ -186,6 +186,7 @@ def build_pdf():
         [Paragraph("<b>Alumno / Autor:</b>", table_cell_style), Paragraph("Daniel Daroca (GitHub: <code>danidaroca</code>)", table_cell_style)],
         [Paragraph("<b>Stack Tecnológico:</b>", table_cell_style), Paragraph("Ionic 9 + Angular 22 (Standalone) + Chart.js + jsPDF + RxJS + Compodoc", table_cell_style)],
         [Paragraph("<b>URL del Repositorio:</b>", table_cell_style), Paragraph("<b>https://github.com/danidaroca/DI-Actividad-1</b>", table_cell_style)],
+        [Paragraph("<b>Despliegue en Vercel:</b>", table_cell_style), Paragraph("<b>https://di-actividad-1.vercel.app</b>", table_cell_style)],
         [Paragraph("<b>Estado del Proyecto:</b>", table_cell_style), Paragraph("<b>100% COMPLETADO (Fases 1, 2, 3, 4 y 5 Finalizadas según Rúbrica Oficial)</b>", table_cell_style)]
     ]
     meta_table = Table(meta_data, colWidths=[140, 350])
@@ -347,7 +348,7 @@ def build_pdf():
     story.append(Paragraph("<b>Pipeline CI/CD y Despliegue en la Nube (Paso 5.3):</b>", h2_style))
     ci_points = [
         "<b>GitHub Actions Pipeline (<code>ci/workflows/ci.yml</code>):</b> Automatiza la descarga del repositorio, instalación de dependencias (<code>npm ci</code>), generación de documentación con Compodoc y compilación para producción (<code>npm run build</code>).",
-        "<b>Configuración Vercel (<code>vercel.json</code>):</b> Incluye enrutamiento reescrito para Single Page Applications (SPA), directiva de salida en <code>www/</code> y cabeceras de seguridad HTTP (X-Content-Type-Options, X-Frame-Options, X-XSS-Protection).",
+        "<b>Configuración Vercel (<code>vercel.json</code>):</b> Despliegue en producción operativo en <font color=\"#2563EB\"><b>https://di-actividad-1.vercel.app</b></font> con enrutamiento reescrito para Single Page Applications (SPA), directiva de salida en <code>www/</code> y cabeceras de seguridad HTTP (X-Content-Type-Options, X-Frame-Options, X-XSS-Protection).",
         "<b>Manual de Usuario Embebido:</b> Vista interactiva en <code>/help</code> estructurada mediante acordeones accesibles para consulta directa del usuario."
     ]
     for cp in ci_points:
