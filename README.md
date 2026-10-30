@@ -150,7 +150,37 @@ La pantalla de login (`/login`) cuenta con botones de **autocompletado en un sol
 
 ---
 
-## 🌿 6. Estructura de Ramas (Git Flow)
+## 🛡️ 6. Memoria de Arquitectura de Seguridad y Control de Acceso (Hito Previo)
+
+El proyecto incluye la documentación técnica completa requerida para el **Requerimiento Previo a la Entrega Oficial** sobre seguridad y control de acceso:
+
+* **Documento Técnico en PDF (4 páginas):** [Memoria_Seguridad_Ionic_Daroca_Daniel.pdf](Memoria_Seguridad_Ionic_Daroca_Daniel.pdf)
+* **Memoria en Markdown en el Repositorio:** [docs/security-architecture.md](docs/security-architecture.md)
+
+### Aspectos Clave Implementados:
+1. **Functional Guards (CanMatchFn frente a CanActivateFn):**
+   * Implementación en src/app/core/guards/auth.guard.ts y 
+ole.guard.ts.
+   * canMatch previene la descarga del bundle JavaScript del componente lazy si el usuario no tiene permisos (Zero-Leakage y ahorro de ancho de banda móvil).
+   * canActivate valida estado en memoria y gestiona la redirección contextual con 
+eturnUrl.
+2. **Functional HTTP Interceptors (HttpInterceptorFn):**
+   * uthInterceptor inyecta de forma inmutable la cabecera Authorization: Bearer <token>.
+   * errorInterceptor gestiona de forma centralizada errores 401 Unauthorized (renovación reactiva o cierre de sesión) y 403 Forbidden (bloqueo por RBAC).
+   * Registrados en src/main.ts mediante provideHttpClient(withInterceptors([authInterceptor, errorInterceptor])).
+3. **Control de Acceso Basado en Roles (RBAC) con Signals:**
+   * Modelo formal  \to Rol \to Permisos$ con claims estructurados en el payload JWT (sub, 
+ole, permissions, exp).
+   * Desacoplamiento de estado en AuthService mediante Angular Signals (currentUserSignal, isAdminSignal).
+4. **Control Visual UI/UX Condicional:**
+   * Ocultación en plantilla del menú lateral (pp.component.html) para rutas exclusivas de administrador (/dashboard).
+   * Desactivación condicional del botón de borrado en <app-data-table> mediante @Input() canDelete.
+5. **Matriz Comparativa de Alternativas:**
+   * Análisis fundamentado en seguridad, sobrecarga de red, mantenibilidad y escalabilidad frente a comprobaciones en componente, inyección manual y flags booleanos simples.
+
+---
+
+## 🌿 7. Estructura de Ramas (Git Flow)
 
 El desarrollo ha seguido la metodología profesional **Git Flow**:
 * `main`: Rama de entrega final y código en producción.

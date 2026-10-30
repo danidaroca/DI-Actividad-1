@@ -1,4 +1,13 @@
-export type UserRole = 'ADMIN' | 'STANDARD_USER';
+export type UserRole = 'ADMIN' | 'STANDARD_USER' | 'SUPERVISOR';
+
+export interface TokenClaims {
+  sub: string;             // Identificador único de usuario (Subject)
+  email: string;           // Correo electrónico
+  role: UserRole;          // Rol principal en el modelo RBAC
+  permissions: string[];   // Lista de capacidades granulares
+  iat: number;             // Issued At (Timestamp de emisión)
+  exp: number;             // Expiration Time (Timestamp de expiración)
+}
 
 export interface User {
   id: string;
