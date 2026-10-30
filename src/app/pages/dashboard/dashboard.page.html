@@ -3,12 +3,15 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>Cuadro de Mando (Dashboard)</ion-title>
+    <ion-title>Cuadro de Mando Ejecutivo</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="loadDashboardData()" aria-label="Actualizar métricas">
+      <ion-button (click)="loadConsolidatedData()" aria-label="Actualizar datos consolidados">
         <ion-icon name="refresh-outline" slot="icon-only"></ion-icon>
       </ion-button>
-      <ion-button (click)="onExportCSV()" aria-label="Descargar informe CSV">
+      <ion-button (click)="onExportPDF()" aria-label="Descargar informe oficial en PDF">
+        <ion-icon name="document-text-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+      <ion-button (click)="onExportCSV()" aria-label="Descargar informe en CSV">
         <ion-icon name="download-outline" slot="icon-only"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -17,28 +20,35 @@
 
 <ion-content [fullscreen]="true" class="dashboard-content">
   <div class="content-container">
-    <!-- Bienvenida / Contexto -->
+    <!-- Bienvenida / Contexto de Usuario -->
     <div class="dashboard-header" role="banner">
       <div>
-        <h1>Panel de Control Ejecutivo</h1>
-        <p>Bienvenido, <strong>{{ currentUser?.name }}</strong> (Rol: {{ currentUser?.role }})</p>
+        <h1>Cuadro de Mando (Rol: Administrador)</h1>
+        <p>
+          Sesión activa: <strong>{{ currentUser?.name }}</strong> 
+          <span class="user-role-badge">ADMIN</span>
+        </p>
       </div>
       <div class="header-actions">
-        <ion-button fill="solid" color="secondary" size="small" (click)="onExportCSV()">
+        <ion-button fill="outline" color="dark" size="small" (click)="onExportCSV()" aria-label="Exportar datos a CSV">
           <ion-icon name="download-outline" slot="start"></ion-icon>
-          Exportar Informe CSV
+          Exportar CSV
+        </ion-button>
+        <ion-button fill="solid" color="primary" size="small" (click)="onExportPDF()" aria-label="Generar y descargar informe en PDF">
+          <ion-icon name="document-text-outline" slot="start"></ion-icon>
+          Informe PDF Oficial
         </ion-button>
       </div>
     </div>
 
-    <!-- Indicador de carga -->
+    <!-- Indicador de carga con Spinners concurrentes (Paso 3.1) -->
     @if (isLoading) {
       <div class="loading-box" role="status" aria-live="polite">
         <ion-spinner name="crescent" color="primary"></ion-spinner>
-        <p>Consolidando métricas del sistema...</p>
+        <p>Orquestando datos asíncronos concurrentes (SQL + NoSQL con forkJoin)...</p>
       </div>
     } @else {
-      <!-- Grilla de Componentes Reutilizables StatCard (Fase 2) -->
+      <!-- Grilla de Componentes Reutilizables StatCard (Fase 2 - RA 3) -->
       <section aria-label="Indicadores Clave de Rendimiento">
         <ion-grid class="stats-grid">
           <ion-row>
@@ -60,40 +70,121 @@
         </ion-grid>
       </section>
 
+      <!-- FASE 3: Gráficos Interactivos con Chart.js (Paso 3.2 - RA 5) -->
+      <section class="charts-section" aria-label="Gráficos visuales interactivos de negocio">
+        <div class="charts-control-bar">
+          <div class="control-title">
+            <ion-icon name="pie-chart-outline" color="primary"></ion-icon>
+            <h3>Analítica Visual de Catálogo</h3>
+          </div>
+          <div class="filter-controls" role="group" aria-label="Filtro interactivo en tiempo real">
+            <span class="filter-label">Modo métrico:</span>
+            <ion-button 
+              size="small" 
+              [fill]="chartMetricMode === 'stock' ? 'solid' : 'outline'" 
+              color="primary"
+              (click)="onMetricModeChange('stock')">
+              <ion-icon name="bar-chart-outline" slot="start"></ion-icon>
+              Unidades en Stock
+            </ion-button>
+            <ion-button 
+              size="small" 
+              [fill]="chartMetricMode === 'value' ? 'solid' : 'outline'" 
+              color="success"
+              (click)="onMetricModeChange('value')">
+              <ion-icon name="pie-chart-outline" slot="start"></ion-icon>
+              Valoración Económica (€)
+            </ion-button>
+          </div>
+        </div>
+
+        <ion-grid class="charts-grid">
+          <ion-row>
+            <!-- Gráfico 1: Barras -->
+            <ion-col size="12" size-lg="7">
+              <ion-card class="chart-card">
+                <ion-card-header>
+                  <ion-card-title>
+                    {{ chartMetricMode === 'stock' ? 'Stock Disponible por Categoría' : 'Valoración Económica por Categoría' }}
+                  </ion-card-title>
+                  <ion-card-subtitle>
+                    Visualización interactiva con Chart.js y actualización en tiempo real
+                  </ion-card-subtitle>
+                </ion-card-header>
+                <ion-card-content>
+                  <div class="canvas-container">
+                    <canvas #barCanvas aria-label="Gráfico de barras de categorías" role="img"></canvas>
+                  </div>
+                </ion-card-content>
+              </ion-card>
+            </ion-col>
+
+            <!-- Gráfico 2: Donut -->
+            <ion-col size="12" size-lg="5">
+              <ion-card class="chart-card">
+                <ion-card-header>
+                  <ion-card-title>Cuota de Activos (€)</ion-card-title>
+                  <ion-card-subtitle>Distribución proporcional del valor</ion-card-subtitle>
+                </ion-card-header>
+                <ion-card-content>
+                  <div class="canvas-container donut-wrapper">
+                    <canvas #donutCanvas aria-label="Gráfico de donut de distribución de activos" role="img"></canvas>
+                  </div>
+                </ion-card-content>
+              </ion-card>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </section>
+
       <!-- Actividad y Monitorización en tiempo real NoSQL -->
       <ion-grid class="main-sections-grid">
         <ion-row>
-          <ion-col size="12" size-lg="8">
+          <ion-col size="12" size-lg="7">
             <ion-card class="section-card">
               <ion-card-header>
-                <ion-card-title>Arquitectura y Estado de las Fuentes de Datos</ion-card-title>
+                <ion-card-title>Arquitectura de Persistencia y Exportación</ion-card-title>
+                <ion-card-subtitle>Cumplimiento de los requisitos RA 5</ion-card-subtitle>
               </ion-card-header>
               <ion-card-content>
                 <div class="architecture-pills">
                   <div class="arch-box">
                     <span class="badge sql">SQL / Relacional</span>
                     <h4>API REST Transaccional</h4>
-                    <p>Gestión de inventario de activos, productos y control de consistencia.</p>
+                    <p>Consumo de catálogo relacional, operaciones CRUD asíncronas y validación de stock.</p>
                   </div>
                   <div class="arch-box">
-                    <span class="badge nosql">NoSQL / Firestore</span>
-                    <h4>Flujo de Eventos en Vivo</h4>
-                    <p>Suscripción reactiva mediante Observables a registros de auditoría y logs.</p>
+                    <span class="badge nosql">NoSQL / Firestore Mock</span>
+                    <h4>Flujo de Eventos en Tiempo Real</h4>
+                    <p>Canal de notificaciones reactivas (BehaviorSubject) que emite eventos instantáneos.</p>
                   </div>
                 </div>
 
-                <div class="wcag-compliance-note">
-                  <h4>Cumplimiento WCAG 2.1 & WAI-ARIA</h4>
-                  <p>Esta interfaz incorpora contraste óptimo de color, etiquetas semánticas y compatibilidad con lectores de pantalla.</p>
+                <div class="export-banner">
+                  <div class="export-info">
+                    <h4>Generación y Descarga de Informes (Paso 3.3)</h4>
+                    <p>Exportación normalizada a formatos estándar <strong>PDF tabulado con diseño</strong> y <strong>CSV delimitado UTF-8</strong>.</p>
+                  </div>
+                  <div class="export-actions">
+                    <ion-button size="small" color="primary" fill="solid" (click)="onExportPDF()">
+                      <ion-icon name="document-text-outline" slot="start"></ion-icon>
+                      Descargar PDF
+                    </ion-button>
+                    <ion-button size="small" color="medium" fill="outline" (click)="onExportCSV()">
+                      <ion-icon name="download-outline" slot="start"></ion-icon>
+                      Descargar CSV
+                    </ion-button>
+                  </div>
                 </div>
               </ion-card-content>
             </ion-card>
           </ion-col>
 
-          <ion-col size="12" size-lg="4">
+          <ion-col size="12" size-lg="5">
             <ion-card class="section-card">
               <ion-card-header>
                 <ion-card-title>Eventos en Tiempo Real (NoSQL)</ion-card-title>
+                <ion-card-subtitle>Suscripción reactiva en vivo</ion-card-subtitle>
               </ion-card-header>
               <ion-card-content class="notifications-content">
                 <ion-list lines="inset">
@@ -118,4 +209,12 @@
       </ion-grid>
     }
   </div>
+
+  <!-- Toast de Notificaciones -->
+  <ion-toast
+    [isOpen]="isToastOpen"
+    [message]="toastMessage"
+    [duration]="2500"
+    (didDismiss)="isToastOpen = false">
+  </ion-toast>
 </ion-content>
