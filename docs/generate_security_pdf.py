@@ -173,7 +173,7 @@ def build_pdf():
         [Paragraph("<b>Autor / Alumno:</b>", table_cell_style), Paragraph("Daniel Daroca (DAM 2)", table_cell_style),
          Paragraph("<b>Fecha de Entrega:</b>", table_cell_style), Paragraph("31 de octubre, 23:59 h", table_cell_style)],
         [Paragraph("<b>Repositorio GitHub:</b>", table_cell_style), Paragraph("<u>https://github.com/danidaroca/DI-Actividad-1</u>", table_cell_style),
-         Paragraph("<b>Sección en Repo:</b>", table_cell_style), Paragraph("<code>docs/security-architecture.md</code>", table_cell_style)]
+         Paragraph("<b>Despliegue Vercel:</b>", table_cell_style), Paragraph("<u>https://di-actividad-1.vercel.app</u>", table_cell_style)]
     ]
     t_meta = Table(meta_info, colWidths=[95, 185, 95, 132])
     t_meta.setStyle(TableStyle([
