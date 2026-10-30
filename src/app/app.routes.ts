@@ -1,7 +1,11 @@
 import { Routes } from '@angular/router';
-import { authGuard } from './core/guards/auth.guard';
-import { roleGuard } from './core/guards/role.guard';
+import { authGuard, authMatchGuard } from './core/guards/auth.guard';
+import { roleGuard, roleMatchGuard } from './core/guards/role.guard';
 
+/**
+ * Tabla de enrutamiento principal con lazy loading, guards funcionales (CanActivateFn / CanMatchFn)
+ * y control de acceso basado en roles (RBAC).
+ */
 export const routes: Routes = [
   {
     path: '',
@@ -18,6 +22,7 @@ export const routes: Routes = [
   },
   {
     path: 'dashboard',
+    canMatch: [authMatchGuard, roleMatchGuard],
     canActivate: [authGuard, roleGuard],
     data: { expectedRole: 'ADMIN' },
     loadComponent: () => import('./pages/dashboard/dashboard.page').then(m => m.DashboardPage)
