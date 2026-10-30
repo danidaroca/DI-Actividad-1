@@ -1,0 +1,37 @@
+name: CI/CD Pipeline - Validacion y Compilacion de Produccion
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+  pull_request:
+    branches: [ "main", "develop" ]
+
+jobs:
+  build-and-verify:
+    name: Compilacion, Auditoria y Documentacion (RA 6 y RA 7)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar codigo fuente
+        uses: actions/checkout@v4
+
+      - name: Configurar entorno Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Instalar dependencias del proyecto
+        run: npm ci
+
+      - name: Generar documentacion tecnica con Compodoc (Paso 5.2 - RA 6)
+        run: npm run compodoc:build
+
+      - name: Compilar aplicacion para produccion (PWA/Hibrida)
+        run: npm run build
+
+      - name: Verificar artefacto generado en www/
+        run: |
+          test -d www || exit 1
+          test -f www/index.html || exit 1
+          echo "Artefacto de produccion verificado satisfactoriamente."

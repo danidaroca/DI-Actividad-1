@@ -1,9 +1,23 @@
 import { Injectable, inject } from '@angular/core';
-import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
-import { delay, map, tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of, throwError, forkJoin } from 'rxjs';
+import { delay, map, tap, take } from 'rxjs/operators';
 import { BusinessRecord, SystemNotification } from '../models/record.model';
 import { StatMetric } from '../models/metric.model';
 import { AsyncValidatorService } from './async-validator.service';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+
+export interface DashboardConsolidated {
+  metrics: StatMetric[];
+  records: BusinessRecord[];
+  notifications: SystemNotification[];
+}
+
+export interface CategoryDistribution {
+  categories: string[];
+  stockPerCategory: number[];
+  valuePerCategory: number[];
+}
 
 @Injectable({
   providedIn: 'root'
@@ -62,6 +76,26 @@ export class DataService {
       price: 85.20,
       status: 'RESERVADO',
       lastUpdated: '2026-10-24'
+    },
+    {
+      id: 'rec-6',
+      code: 'PROD-004',
+      name: 'Teclado Mecánico Inalámbrico RGB',
+      category: 'Tecnología',
+      stock: 35,
+      price: 119.95,
+      status: 'DISPONIBLE',
+      lastUpdated: '2026-10-25'
+    },
+    {
+      id: 'rec-7',
+      code: 'MOB-102',
+      name: 'Mesa Elevable Eléctrica Doble Motor',
+      category: 'Mobiliario',
+      stock: 8,
+      price: 489.00,
+      status: 'DISPONIBLE',
+      lastUpdated: '2026-10-26'
     }
   ];
 
@@ -93,6 +127,48 @@ export class DataService {
    */
   public getRecords(): Observable<BusinessRecord[]> {
     return of([...this.mockRecords]).pipe(delay(450));
+  }
+
+  /**
+   * Orquestación asíncrona avanzada concurrente mediante forkJoin (Paso 3.1 - RA 5 Sobresaliente).
+   * Consolida fuentes simultáneas de SQL y NoSQL con gestión de errores.
+   */
+  public getDashboardConsolidatedData(): Observable<DashboardConsolidated> {
+    return forkJoin({
+      metrics: this.getDashboardMetrics(),
+      records: this.getRecords(),
+      notifications: this.notifications$.pipe(take(1))
+    }).pipe(
+      delay(300)
+    );
+  }
+
+  /**
+   * Obtiene la distribución agregada por categorías para alimentar gráficos de Chart.js
+   */
+  public getCategoryDistribution(): Observable<CategoryDistribution> {
+    return this.getRecords().pipe(
+      map(records => {
+        const catMap = new Map<string, { stock: number; value: number }>();
+
+        records.forEach(r => {
+          const current = catMap.get(r.category) || { stock: 0, value: 0 };
+          current.stock += r.stock;
+          current.value += (r.stock * r.price);
+          catMap.set(r.category, current);
+        });
+
+        const categories = Array.from(catMap.keys());
+        const stockPerCategory = categories.map(c => catMap.get(c)!.stock);
+        const valuePerCategory = categories.map(c => parseFloat(catMap.get(c)!.value.toFixed(2)));
+
+        return {
+          categories,
+          stockPerCategory,
+          valuePerCategory
+        };
+      })
+    );
   }
 
   /**
@@ -187,7 +263,7 @@ export class DataService {
    * Exporta la lista de registros a formato CSV estándar (Paso 3.3)
    */
   public exportRecordsToCSV(): void {
-    const headers = ['ID', 'Código', 'Nombre', 'Categoría', 'Stock', 'Precio (€)', 'Estado', 'Última Actualización'];
+    const headers = ['ID', 'Código', 'Nombre', 'Categoría', 'Stock', 'Precio (€)', 'Total (€)', 'Estado', 'Última Actualización'];
     const rows = this.mockRecords.map(r => [
       `"${r.id}"`,
       `"${r.code}"`,
@@ -195,6 +271,7 @@ export class DataService {
       `"${r.category}"`,
       r.stock,
       r.price.toFixed(2),
+      (r.stock * r.price).toFixed(2),
       `"${r.status}"`,
       `"${r.lastUpdated}"`
     ]);
@@ -208,6 +285,153 @@ export class DataService {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  }
+
+  /**
+   * Exportación robusta de informes tabulados con diseño en PDF (Paso 3.3 - RA 5 Sobresaliente)
+   * Genera un documento corporativo con encabezado, métricas globales, tabla estilizada y pie de página.
+   */
+  public exportRecordsToPDF(): void {
+    const doc = new jsPDF({
+      orientation: 'landscape',
+      unit: 'mm',
+      format: 'a4'
+    });
+
+    const todayStr = new Date().toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+
+    // 1. Encabezado corporativo
+    doc.setFillColor(30, 58, 138); // Navy blue #1e3a8a
+    doc.rect(0, 0, 297, 24, 'F');
+
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(16);
+    doc.text('SISTEMA DE GESTIÓN MULTIPLATAFORMA (PWA/HÍBRIDA)', 14, 12);
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.text('MÓDULO: DESARROLLO DE INTERFACES (0488) | DAM - INFORME TABULADO OFICIAL', 14, 18);
+    doc.text(`Generado: ${todayStr}`, 230, 18);
+
+    // 2. Resumen ejecutivo de métricas (KPIs)
+    const totalRecords = this.mockRecords.length;
+    const totalStock = this.mockRecords.reduce((acc, r) => acc + r.stock, 0);
+    const totalValue = this.mockRecords.reduce((acc, r) => acc + (r.stock * r.price), 0);
+    const outOfStock = this.mockRecords.filter(r => r.stock === 0).length;
+
+    doc.setTextColor(31, 41, 55);
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'bold');
+    doc.text('RESUMEN CONSOLIDADO DE INVENTARIO Y ACTIVOS', 14, 33);
+
+    // Cajas de resumen KPI
+    const kpiBoxes = [
+      { label: 'Total Registros', val: `${totalRecords} items`, fill: [238, 242, 255], border: [99, 102, 241] },
+      { label: 'Unidades en Stock', val: `${totalStock} uds`, fill: [240, 253, 244], border: [34, 197, 94] },
+      { label: 'Valoración Activos', val: `${totalValue.toLocaleString('es-ES', { minimumFractionDigits: 2 })} €`, fill: [254, 243, 199], border: [245, 158, 11] },
+      { label: 'Alertas de Stock', val: `${outOfStock} agotados`, fill: [254, 242, 242], border: [239, 68, 68] }
+    ];
+
+    let startX = 14;
+    kpiBoxes.forEach(k => {
+      doc.setFillColor(k.fill[0], k.fill[1], k.fill[2]);
+      doc.setDrawColor(k.border[0], k.border[1], k.border[2]);
+      doc.setLineWidth(0.5);
+      doc.roundedRect(startX, 37, 62, 14, 2, 2, 'FD');
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(7.5);
+      doc.setTextColor(75, 85, 99);
+      doc.text(k.label, startX + 4, 42);
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(10);
+      doc.setTextColor(17, 24, 39);
+      doc.text(k.val, startX + 4, 48);
+
+      startX += 68;
+    });
+
+    // 3. Tabla tabulada avanzada con autoTable
+    const tableHeaders = [['Código', 'Nombre / Descripción del Artículo', 'Categoría', 'Stock', 'Precio (€)', 'Valor Total (€)', 'Estado']];
+    const tableBody = this.mockRecords.map(r => [
+      r.code,
+      r.name,
+      r.category,
+      r.stock.toString(),
+      `${r.price.toFixed(2)} €`,
+      `${(r.stock * r.price).toFixed(2)} €`,
+      r.status
+    ]);
+
+    autoTable(doc, {
+      head: tableHeaders,
+      body: tableBody,
+      startY: 56,
+      theme: 'grid',
+      styles: {
+        fontSize: 8.5,
+        cellPadding: 3,
+        valign: 'middle'
+      },
+      headStyles: {
+        fillColor: [30, 58, 138],
+        textColor: [255, 255, 255],
+        fontStyle: 'bold',
+        halign: 'left'
+      },
+      alternateRowStyles: {
+        fillColor: [248, 250, 252]
+      },
+      columnStyles: {
+        0: { cellWidth: 26, fontStyle: 'bold' },
+        1: { cellWidth: 90 },
+        2: { cellWidth: 35 },
+        3: { cellWidth: 22, halign: 'center' },
+        4: { cellWidth: 28, halign: 'right' },
+        5: { cellWidth: 35, halign: 'right', fontStyle: 'bold' },
+        6: { cellWidth: 33, halign: 'center' }
+      },
+      didParseCell: (data) => {
+        if (data.section === 'body' && data.column.index === 6) {
+          const val = data.cell.raw;
+          if (val === 'DISPONIBLE') {
+            data.cell.styles.textColor = [22, 101, 52];
+            data.cell.styles.fontStyle = 'bold';
+          } else if (val === 'AGOTADO') {
+            data.cell.styles.textColor = [185, 28, 28];
+            data.cell.styles.fontStyle = 'bold';
+          } else if (val === 'RESERVADO') {
+            data.cell.styles.textColor = [180, 83, 9];
+          }
+        }
+      },
+      didDrawPage: (data) => {
+        // Pie de página con numeración
+        const pageCount = (doc as any).internal.getNumberOfPages();
+        doc.setFontSize(8);
+        doc.setTextColor(150);
+        doc.text(
+          `Documento oficial de control de inventario - Página ${data.pageNumber} de ${pageCount}`,
+          14,
+          202
+        );
+        doc.text(
+          'Sistema Empresarial Híbrido PWA - DI 0488',
+          240,
+          202
+        );
+      }
+    });
+
+    doc.save(`informe_inventario_oficial_${new Date().toISOString().split('T')[0]}.pdf`);
   }
 
   private emitNotification(type: 'INFO' | 'WARNING' | 'SUCCESS', message: string): void {

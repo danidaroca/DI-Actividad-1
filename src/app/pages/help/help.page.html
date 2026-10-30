@@ -22,6 +22,7 @@
     </ion-card>
 
     <ion-accordion-group value="roles">
+      <!-- 1. Roles y RBAC -->
       <ion-accordion value="roles">
         <ion-item slot="header" color="light">
           <ion-icon name="shield-outline" slot="start" color="primary"></ion-icon>
@@ -30,12 +31,13 @@
         <div class="accordion-content" slot="content">
           <p>El sistema soporta dos perfiles con permisos diferenciados mediante <code>Guards</code>:</p>
           <ul>
-            <li><strong>Administrador:</strong> Acceso completo al Cuadro de Mando, catálogo de registros, creación y borrado de elementos.</li>
-            <li><strong>Usuario Estándar:</strong> Acceso al catálogo de registros para consulta y alta; rutas administrativas protegidas.</li>
+            <li><strong>Administrador:</strong> Acceso completo al Cuadro de Mando, analítica de gráficos Chart.js, catálogo de registros, creación y borrado de elementos.</li>
+            <li><strong>Usuario Estándar:</strong> Acceso al catálogo de registros para consulta, alta y exportación; ruta de Cuadro de Mando protegida.</li>
           </ul>
         </div>
       </ion-accordion>
 
+      <!-- 2. Formularios y Validaciones -->
       <ion-accordion value="forms">
         <ion-item slot="header" color="light">
           <ion-icon name="document-text-outline" slot="start" color="primary"></ion-icon>
@@ -48,12 +50,13 @@
           </p>
           <ul>
             <li>Verificación en tiempo real de correos electrónicos no duplicados.</li>
-            <li>Verificación de códigos únicos de producto (formato y disponibilidad).</li>
-            <li>Retroalimentación visual accesible (estados PENDING, valid e invalid).</li>
+            <li>Verificación de códigos únicos de producto (formato regex y disponibilidad).</li>
+            <li>Retroalimentación visual accesible (estados PENDING con spinner, válido con check verde y alertas).</li>
           </ul>
         </div>
       </ion-accordion>
 
+      <!-- 3. Componentes Visuales Reutilizables -->
       <ion-accordion value="components">
         <ion-item slot="header" color="light">
           <ion-icon name="search-outline" slot="start" color="primary"></ion-icon>
@@ -61,22 +64,60 @@
         </ion-item>
         <div class="accordion-content" slot="content">
           <ul>
-            <li><strong>StatCardComponent:</strong> Widget modular para la visualización de métricas y tendencias (KPIs).</li>
-            <li><strong>DataTableComponent:</strong> Tabla agnóstica con barra de búsqueda instantánea, selector de categorías, paginación y eventos hacia el contenedor padre.</li>
+            <li><strong>StatCardComponent:</strong> Widget modular para la visualización de métricas y tendencias (KPIs) con temas cromáticos configurables.</li>
+            <li><strong>DataTableComponent:</strong> Tabla agnóstica con barra de búsqueda instantánea, selector dinámico de categorías, paginación y eventos hacia el contenedor padre.</li>
           </ul>
         </div>
       </ion-accordion>
 
-      <ion-accordion value="export">
+      <!-- 4. Cuadro de Mando y Chart.js -->
+      <ion-accordion value="dashboard">
         <ion-item slot="header" color="light">
-          <ion-icon name="download-outline" slot="start" color="primary"></ion-icon>
-          <ion-label>4. Exportación de Informes</ion-label>
+          <ion-icon name="pie-chart-outline" slot="start" color="primary"></ion-icon>
+          <ion-label>4. Cuadro de Mando Ejecutivo y Analítica con Chart.js</ion-label>
         </ion-item>
         <div class="accordion-content" slot="content">
           <p>
-            Desde la barra superior o desde el panel de control puede descargar en un clic el inventario completo en formato
-            <strong>CSV normalizado</strong> con codificación UTF-8 BOM, compatible con Microsoft Excel y hojas de cálculo.
+            El panel de control integra gráficos interactivos mediante <strong>Chart.js</strong> para el rol Administrador:
           </p>
+          <ul>
+            <li><strong>Gráfico de Barras:</strong> Representa la distribución de inventario por categoría (permite conmutar en tiempo real entre unidades físicas y valoración monetaria en euros).</li>
+            <li><strong>Gráfico Doughnut:</strong> Refleja la cuota porcentual de valor económico de cada familia de artículos.</li>
+            <li><strong>Orquestación Concurrente:</strong> Carga sincronizada mediante <code>forkJoin</code> de métricas, registros y flujo en tiempo real NoSQL.</li>
+          </ul>
+        </div>
+      </ion-accordion>
+
+      <!-- 5. Exportación de Informes -->
+      <ion-accordion value="export">
+        <ion-item slot="header" color="light">
+          <ion-icon name="download-outline" slot="start" color="primary"></ion-icon>
+          <ion-label>5. Exportación de Informes (PDF y CSV)</ion-label>
+        </ion-item>
+        <div class="accordion-content" slot="content">
+          <p>
+            El sistema permite la extracción tabulada de la información en formatos estándar para auditorías:
+          </p>
+          <ul>
+            <li><strong>Informe PDF Oficial:</strong> Generado con <code>jsPDF</code> y <code>jspdf-autotable</code>, formateado en orientación horizontal con membrete corporativo, tarjetas resumen de KPIs, colores de estado y paginación.</li>
+            <li><strong>Informe CSV Delimitado:</strong> Exportación rápida compatible con Microsoft Excel y LibreOffice Calc (codificación UTF-8 con marca BOM).</li>
+          </ul>
+        </div>
+      </ion-accordion>
+
+      <!-- 6. Documentación Técnica Compodoc -->
+      <ion-accordion value="docs">
+        <ion-item slot="header" color="light">
+          <ion-icon name="help-circle-outline" slot="start" color="primary"></ion-icon>
+          <ion-label>6. Documentación Técnica Automatizada (Compodoc)</ion-label>
+        </ion-item>
+        <div class="accordion-content" slot="content">
+          <p>
+            El proyecto cuenta con documentación estandarizada generada por <strong>Compodoc</strong>. Ejecuta en terminal:
+          </p>
+          <pre><code>npm run compodoc:build
+npm run compodoc:serve</code></pre>
+          <p>Para explorar en el navegador el árbol de componentes, rutas, servicios y cobertura del código.</p>
         </div>
       </ion-accordion>
     </ion-accordion-group>

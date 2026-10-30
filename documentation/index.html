@@ -1,0 +1,379 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>sistema-gestion-multiplataforma documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="./images/favicon.ico">
+	   <link rel="stylesheet" href="./styles/style.css">
+        <link rel="stylesheet" href="./styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="./" class="navbar-brand">sistema-gestion-multiplataforma documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search">
+    <button type="button"
+        class="search-input-clear"
+        aria-label="Clear search"
+        data-search-input-clear>&times;</button>
+</div>
+            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content readme">
+                   <div class="content-data">
+
+
+<h1>Sistema de Gestión Multiplataforma (PWA/Híbrida)</h1>
+<p><strong>Módulo Profesional:</strong> Desarrollo de Interfaces (Código: 0488)<br><strong>Ciclo Formativo:</strong> Grado Superior en Desarrollo de Aplicaciones Multiplataforma (DAM)<br><strong>Actividad:</strong> Actividad Individual 1 - Proyecto de Evaluación Práctica (Entregable Final)<br><strong>Autor:</strong> Daniel Daroca<br><strong>Repositorio GitHub:</strong> <a href="https://github.com/danidaroca/DI-Actividad-1">https://github.com/danidaroca/DI-Actividad-1</a>  </p>
+<hr>
+<h2>📌 1. Descripción General del Proyecto</h2>
+<p>Aplicación de gestión empresarial multiplataforma desarrollada desde cero utilizando el framework <strong>Ionic 9</strong> sobre arquitectura <strong>Angular 22 (Standalone Components)</strong>. </p>
+<p>El proyecto implementa una arquitectura desacoplada y robusta, consumo asíncrono de orígenes duales de datos (API REST SQL relacional + Servicio de eventos en tiempo real NoSQL/Firestore mockeado mediante <code>BehaviorSubject</code>), control de acceso estricto basado en roles (RBAC con <code>authGuard</code> y <code>roleGuard</code>), dashboard ejecutivo interactivo con gráficos <strong>Chart.js</strong>, generación y descarga de informes tabulados oficiales en <strong>PDF y CSV</strong>, cumplimiento integral de normativas de accesibilidad <strong>WCAG 2.1</strong>, documentación técnica automatizada con <strong>Compodoc</strong> y pipeline de integración continua <strong>CI/CD</strong> con despliegue en la nube.</p>
+<hr>
+<h2>🏗️ 2. Arquitectura del Software</h2>
+<b>Example :</b><div><pre class="line-numbers"><code class="language-none">src/
+├── app/
+│   ├── core/                           # Capa singleton: servicios, modelos y seguridad
+│   │   ├── guards/
+│   │   │   ├── auth.guard.ts           # Protección de rutas privadas (redirección a login)
+│   │   │   └── role.guard.ts           # Control de acceso por roles (ADMIN vs STANDARD)
+│   │   ├── models/
+│   │   │   ├── user.model.ts           # Modelos de usuario, credenciales y roles
+│   │   │   ├── record.model.ts         # Entidades de inventario y notificaciones
+│   │   │   └── metric.model.ts         # Métricas KPI consolidadas
+│   │   └── services/
+│   │       ├── auth.service.ts         # Autenticación, JWT sintético y sesiones reactivas
+│   │       ├── async-validator.service.ts # Validaciones asíncronas contra backend simulado
+│   │       └── data.service.ts         # Consumo dual (SQL + NoSQL), forkJoin, exportación PDF/CSV
+│   ├── pages/                          # Vistas enrutadas con Carga Diferida (Lazy Loading)
+│   │   ├── login/                      # Formulario reactivo de login con botones demo
+│   │   ├── register/                   # Formulario de alta con validación asíncrona de email
+│   │   ├── dashboard/                  # Cuadro de mando con Chart.js y filtros en tiempo real (ADMIN)
+│   │   ├── records/                    # Gestión de inventario, modal reactivo y exportación
+│   │   └── help/                       # Manual de usuario interactivo embebido
+│   └── shared/                         # Componentes reutilizables e independientes
+│       └── components/
+│           ├── stat-card/              # Widget KPI instanciable (&#64;Input/&#64;Output, OnPush)
+│           └── data-table/             # Tabla avanzada con buscador, filtros y Signals
+├── assets/                             # Recursos estáticos e iconos
+└── theme/                              # Variables y estilos globales de diseño</code></pre></div><hr>
+<h2>🚀 3. Estado de Ejecución de las Fases (100% Completadas)</h2>
+<h3>✅ FASE 1: Estructuración y Renderizado Declarativo (RA 1 y RA 2)</h3>
+<ul>
+<li><strong>Paso 1.1 - Sistema de Enrutamiento y Navegación:</strong><ul>
+<li>Menú lateral responsivo (<code>Side Menu</code>) interactivo con carga diferida (<code>Lazy Loading</code> mediante <code>loadComponent</code>).</li>
+<li>Protección robusta de rutas mediante <code>authGuard</code> y <code>roleGuard</code>.</li>
+<li>Control de acceso por roles: <strong>Administrador</strong> (acceso total + Cuadro de Mando) y <strong>Usuario Estándar</strong> (catálogo e inventario).</li>
+</ul>
+</li>
+<li><strong>Paso 1.2 - Formularios y Validaciones Asíncronas:</strong><ul>
+<li>Formulario reactivo de <strong>Login</strong> con gestión de errores UX declarativa.</li>
+<li>Formulario reactivo de <strong>Alta de Usuario</strong> con <strong>validación asíncrona</strong> en tiempo real (<code>AsyncValidatorService</code>) que comprueba la existencia de correo en base de datos con indicador <code>PENDING</code> (spinner), validación positiva (check verde) y control de duplicados.</li>
+<li>Formulario de <strong>Alta de Registros</strong> con validación asíncrona de código único de producto (<code>PROD-XXX</code>) y validaciones síncronas de formato.</li>
+</ul>
+</li>
+</ul>
+<h3>✅ FASE 2: Componentización Visual y Lógica de Negocio (RA 3)</h3>
+<ul>
+<li><strong>Paso 2.1 - Componentes Personalizados:</strong><ul>
+<li><code>&lt;app-stat-card&gt;</code>: Widget estadístico/KPI modular para representar valores consolidados, porcentajes de variación, indicadores de tendencia y temas cromáticos.</li>
+<li><code>&lt;app-data-table&gt;</code>: Tabla de datos agnóstica con buscador reactivo instantáneo, filtro por categorías, paginación y columnas dinámicas tipadas.</li>
+</ul>
+</li>
+<li><strong>Paso 2.2 - Gestión de Estado y Eventos:</strong><ul>
+<li>Componentes totalmente independientes del contenedor padre con estrategia <code>ChangeDetectionStrategy.OnPush</code>.</li>
+<li>Paso de datos declarativo vía <code>@Input()</code> / Signals y emisión desacoplada mediante <code>@Output()</code> (<code>rowSelect</code>, <code>rowDelete</code>, <code>rowEdit</code>, <code>cardClick</code>).</li>
+</ul>
+</li>
+</ul>
+<h3>✅ FASE 3: Consumo de Datos y Generación de Informes (RA 5)</h3>
+<ul>
+<li><strong>Paso 3.1 - Concurrencia y Asincronía:</strong><ul>
+<li>Simulación de consumo dual: API REST relacional (SQL) para inventario transaccional y servicio en tiempo real NoSQL (Firestore Mock) basado en <code>BehaviorSubject</code> para auditoría y logs.</li>
+<li>Orquestación asíncrona avanzada mediante <strong>RxJS <code>forkJoin</code></strong> con control de spinners de carga y gestión de errores.</li>
+</ul>
+</li>
+<li><strong>Paso 3.2 - Dashboard Interactivo con Chart.js:</strong><ul>
+<li>Gráficos visuales dinámicos de <strong>Barras</strong> (Stock/Valor por categoría) y <strong>Doughnut</strong> (Cuota económica de activos).</li>
+<li>Filtro interactivo en tiempo real que permite conmutar entre &quot;Unidades en Stock&quot; y &quot;Valoración Económica (€)&quot; recalculando la visualización al instante.</li>
+<li>Ciclo de vida optimizado con destrucción explícita de instancias en <code>ngOnDestroy</code> para evitar memory leaks.</li>
+</ul>
+</li>
+<li><strong>Paso 3.3 - Exportación de Datos:</strong><ul>
+<li><strong>Exportación a PDF Oficial:</strong> Generación en cliente con <code>jsPDF</code> y <code>jspdf-autotable</code>, incluyendo membrete institucional, tarjetas resumen KPI, tabla formateada con colores semánticos y paginación automática.</li>
+<li><strong>Exportación a CSV Normalizado:</strong> Archivo delimitado con cabeceras estándar y codificación <code>UTF-8 BOM</code> para compatibilidad directa con Excel.</li>
+</ul>
+</li>
+</ul>
+<h3>✅ FASE 4: Usabilidad, Accesibilidad y Calidad (RA 4)</h3>
+<ul>
+<li><strong>Paso 4.1 - Diseño Adaptativo (Responsive):</strong><ul>
+<li>Enfoque <strong>Mobile-First</strong> con adaptación anatómica fluida para smartphones, tablets y pantallas de escritorio.</li>
+</ul>
+</li>
+<li><strong>Paso 4.2 - Cumplimiento WCAG y WAI-ARIA:</strong><ul>
+<li>Contraste de color reglamentario, tipografía escalable, control total de navegación mediante teclado (<code>tabindex=&#39;0&#39;</code> y eventos de tecla Enter) y atributos semánticos <code>WAI-ARIA</code> (<code>role=&quot;table&quot;</code>, <code>role=&quot;region&quot;</code>, <code>aria-label</code>, <code>aria-busy</code>, <code>aria-live</code>).</li>
+</ul>
+</li>
+</ul>
+<h3>✅ FASE 5: Documentación, Control de Versiones y Despliegue (RA 6 y RA 7)</h3>
+<ul>
+<li><strong>Paso 5.1 - Control de Versiones Git Flow:</strong><ul>
+<li>Historial íntegro de commits y ramas estructuradas: <code>main</code>, <code>develop</code>, <code>feature/fase1-enrutamiento-auth</code>, <code>feature/fase2-componentes</code>, <code>feature/fase3-dashboard-informes</code> y <code>feature/fase5-compodoc-ci</code>.</li>
+</ul>
+</li>
+<li><strong>Paso 5.2 - Documentación Técnica y de Usuario:</strong><ul>
+<li>Documentación técnica generada automáticamente con <strong>Compodoc</strong> en la carpeta <code>documentation/</code>.</li>
+<li>Manual de usuario interactivo embebido en la aplicación en la ruta <code>/help</code> y redactado exhaustivamente en este <code>README.md</code>.</li>
+</ul>
+</li>
+<li><strong>Paso 5.3 - Despliegue en Producción y CI/CD:</strong><ul>
+<li>Configuración para despliegue en <strong>Vercel</strong> (<code>vercel.json</code>) con redirecciones SPA y cabeceras de seguridad.</li>
+<li>Pipeline automatizado de integración continua con <strong>GitHub Actions</strong> (<code>.github/workflows/ci.yml</code>) que valida tests, compila con Compodoc y genera el artefacto en <code>www/</code>.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2>🔑 4. Credenciales de Acceso de Prueba</h2>
+<p>La pantalla de login (<code>/login</code>) cuenta con botones de <strong>autocompletado en un solo clic</strong> para agilizar la corrección docente:</p>
+<table class="table table-bordered compodoc-table">
+<thead>
+<tr><th style="text-align: left">Rol</th><th style="text-align: left">Correo Electrónico</th><th style="text-align: left">Contraseña</th><th style="text-align: left">Vistas y Funcionalidades Accesibles</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: left"><strong>Administrador</strong></td><td style="text-align: left"><code>admin@empresa.com</code></td><td style="text-align: left"><code>Admin123!</code></td><td style="text-align: left">Acceso completo: Cuadro de Mando con Chart.js, Gestión de Inventario, Altas, Borrado de artículos, Exportación PDF/CSV y Manual de ayuda.</td></tr>
+<tr><td style="text-align: left"><strong>Usuario Estándar</strong></td><td style="text-align: left"><code>user@empresa.com</code></td><td style="text-align: left"><code>User123!</code></td><td style="text-align: left">Acceso operativo: Catálogo de Inventario, Alta de nuevos productos, Exportación de informes y Manual de ayuda. <em>(Ruta <code>/dashboard</code> protegida por <code>roleGuard</code>)</em>.</td></tr>
+</tbody>
+</table>
+<hr>
+<h2>💻 5. Instalación y Ejecución Local</h2>
+<h3>Prerrequisitos</h3>
+<ul>
+<li><strong>Node.js</strong> (v18 o superior)</li>
+<li><strong>NPM</strong> (v9 o superior)</li>
+<li><strong>Ionic CLI</strong> (opcional, <code>npm install -g @ionic/cli</code>)</li>
+</ul>
+<h3>Instrucciones</h3>
+<ol>
+<li><p><strong>Clonar el repositorio:</strong></p>
+<b>Example :</b><div><pre class="line-numbers"><code class="language-bash">git clone https://github.com/danidaroca/DI-Actividad-1.git
+cd DI-Actividad-1</code></pre></div></li>
+<li><p><strong>Instalar dependencias:</strong></p>
+<b>Example :</b><div><pre class="line-numbers"><code class="language-bash">npm install</code></pre></div></li>
+<li><p><strong>Ejecutar el servidor de desarrollo:</strong></p>
+<b>Example :</b><div><pre class="line-numbers"><code class="language-bash">npm start
+# o bien mediante Ionic:
+ionic serve</code></pre></div><p>Acceder desde el navegador a: <a href="http://localhost:8100">http://localhost:8100</a></p>
+</li>
+<li><p><strong>Generar la documentación técnica con Compodoc:</strong></p>
+<b>Example :</b><div><pre class="line-numbers"><code class="language-bash">npm run compodoc:build
+# Para visualizar la documentación interactiva en el puerto 8080:
+npm run compodoc:serve</code></pre></div></li>
+<li><p><strong>Compilar para producción:</strong></p>
+<b>Example :</b><div><pre class="line-numbers"><code class="language-bash">npm run build</code></pre></div><p>El artefacto compilado y optimizado se genera en el directorio <code>www/</code>.</p>
+</li>
+</ol>
+<hr>
+<h2>🌿 6. Estructura de Ramas (Git Flow)</h2>
+<p>El desarrollo ha seguido la metodología profesional <strong>Git Flow</strong>:</p>
+<ul>
+<li><code>main</code>: Rama de entrega final y código en producción.</li>
+<li><code>develop</code>: Rama de integración de características.</li>
+<li><code>feature/fase1-enrutamiento-auth</code>: Enrutamiento lazy loading, guards y validación asíncrona.</li>
+<li><code>feature/fase2-componentes</code>: Componentes agnósticos modulares (<code>StatCard</code> y <code>DataTable</code>).</li>
+<li><code>feature/fase3-dashboard-informes</code>: Dashboard interactivo con Chart.js, forkJoin y exportación PDF/CSV.</li>
+<li><code>feature/fase5-compodoc-ci</code>: Compodoc, pipeline de GitHub Actions y configuración Vercel.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 0;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'readme';
+            var COMPODOC_CURRENT_PAGE_URL = 'index.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var updateDarkModeSwitchOffset = function () {
+                    var content = document.querySelector('.content');
+                    var scrollbarWidth = 0;
+
+                    if (content) {
+                         scrollbarWidth = Math.max(0, content.offsetWidth - content.clientWidth);
+                    }
+
+                    document.documentElement.style.setProperty(
+                         '--content-scrollbar-width',
+                         scrollbarWidth + 'px'
+                    );
+               };
+
+               updateDarkModeSwitchOffset();
+               requestAnimationFrame(updateDarkModeSwitchOffset);
+               window.addEventListener('resize', updateDarkModeSwitchOffset);
+
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="./js/libs/custom-elements.min.js"></script>
+       <script src="./js/libs/lit-html.js"></script>
+
+       <script src="./js/menu-wc.js" defer></script>
+
+       <script src="./js/libs/bootstrap-native.js"></script>
+
+       <script src="./js/libs/es6-shim.min.js"></script>
+       <script src="./js/libs/EventDispatcher.js"></script>
+       <script src="./js/libs/promise.min.js"></script>
+
+       <script src="./js/compodoc.js"></script>
+
+       <script src="./js/tabs.js"></script>
+       <script src="./js/menu.js"></script>
+       <script src="./js/libs/clipboard.min.js"></script>
+       <script src="./js/libs/prism.js"></script>
+       <script src="./js/sourceCode.js"></script>
+          <script src="./js/search/search.js"></script>
+          <script src="./js/search/lunr.min.js"></script>
+          <script src="./js/search/search-lunr.js"></script>
+          <script src="./js/search/search_index.js"></script>
+       <script src="./js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

@@ -8,6 +8,9 @@
       <ion-button (click)="fetchRecords()" aria-label="Recargar registros">
         <ion-icon name="refresh-outline" slot="icon-only"></ion-icon>
       </ion-button>
+      <ion-button (click)="onExportPDF()" aria-label="Exportar informe a PDF">
+        <ion-icon name="document-text-outline" slot="icon-only"></ion-icon>
+      </ion-button>
       <ion-button (click)="onExportCSV()" aria-label="Exportar a CSV">
         <ion-icon name="download-outline" slot="icon-only"></ion-icon>
       </ion-button>
@@ -24,7 +27,15 @@
         <p>Listado integrado con persistencia dual SQL/NoSQL</p>
       </div>
       <div class="records-actions">
-        <ion-button fill="solid" color="primary" (click)="openCreateModal()">
+        <ion-button fill="outline" color="dark" size="small" (click)="onExportCSV()" aria-label="Exportar informe a CSV">
+          <ion-icon name="download-outline" slot="start"></ion-icon>
+          CSV
+        </ion-button>
+        <ion-button fill="outline" color="primary" size="small" (click)="onExportPDF()" aria-label="Descargar informe oficial en PDF">
+          <ion-icon name="document-text-outline" slot="start"></ion-icon>
+          PDF
+        </ion-button>
+        <ion-button fill="solid" color="primary" size="small" (click)="openCreateModal()">
           <ion-icon name="add-outline" slot="start"></ion-icon>
           Nuevo Registro
         </ion-button>
