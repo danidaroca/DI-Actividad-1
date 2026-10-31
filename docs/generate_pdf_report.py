@@ -365,25 +365,7 @@ def build_pdf():
         story.append(RLImage(build_img_path, width=490, height=270))
     story.append(Spacer(1, 10))
 
-    story.append(Paragraph("9. Matriz Final de Evaluación por Criterios (100% Completado)", h2_style))
-    phase_data = [
-        [Paragraph("<b>Fase del Proyecto</b>", table_header_style), Paragraph("<b>Criterio Oficial Evaluado</b>", table_header_style), Paragraph("<b>Nivel Alcanzado</b>", table_header_style)],
-        [Paragraph("FASE 1: Estructuración y Renderizado", table_cell_style), Paragraph("RA 1 y RA 2 (Enrutamiento Lazy Loading, Guards RBAC, Validación Asíncrona)", table_cell_style), Paragraph("<b>Sobresaliente (100%)</b>", table_cell_style)],
-        [Paragraph("FASE 2: Componentización Visual", table_cell_style), Paragraph("RA 3 (Componentes desacoplados StatCard y DataTable, Inputs/Outputs, OnPush)", table_cell_style), Paragraph("<b>Sobresaliente (100%)</b>", table_cell_style)],
-        [Paragraph("FASE 3: Consumo de Datos e Informes", table_cell_style), Paragraph("RA 5 (Consumo dual SQL/NoSQL, forkJoin, Chart.js interactivo, PDF y CSV)", table_cell_style), Paragraph("<b>Sobresaliente (100%)</b>", table_cell_style)],
-        [Paragraph("FASE 4: Usabilidad y Accesibilidad", table_cell_style), Paragraph("RA 4 (Diseño adaptativo Mobile-First, WCAG 2.1, semántica WAI-ARIA, navegación teclado)", table_cell_style), Paragraph("<b>Sobresaliente (100%)</b>", table_cell_style)],
-        [Paragraph("FASE 5: Control de Versiones y Despliegue", table_cell_style), Paragraph("RA 6 y RA 7 (Git Flow estricto con 4 feature branches, Compodoc, CI/CD y Vercel)", table_cell_style), Paragraph("<b>Sobresaliente (100%)</b>", table_cell_style)]
-    ]
-    phase_table = Table(phase_data, colWidths=[150, 210, 130])
-    phase_table.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), primary_color),
-        ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor("#CBD5E1")),
-        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.white, colors.HexColor("#F8FAFC")]),
-        ('PADDING', (0,0), (-1,-1), 4),
-        ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-    ]))
-    story.append(phase_table)
-    story.append(Spacer(1, 10))
+
 
     story.append(Paragraph("<b>Conclusión Final:</b> La actividad se entrega en su totalidad con máxima rigurosidad técnica, trazabilidad íntegra en GitHub y cumplimiento estricto de los estándares académicos y profesionales.", callout_style))
 
