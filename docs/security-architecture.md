@@ -253,12 +253,3 @@ La selección de la arquitectura actual frente a paradigmas alternativos se fund
 | **Gestión de Credenciales en Red** | **Inyección Manual:** Añadir cabeceras `HttpHeaders` manualmente en cada método de servicio (`data.service.ts`). | **Pipeline Centralizado:** `HttpInterceptorFn` (`authInterceptor` + `errorInterceptor`). | La inyección manual viola el principio **DRY**, introduce riesgo crítico de omisión humana en nuevos servicios y dispersa la lógica de renovación de sesión. El interceptor asegura cobertura del 100% de llamadas HTTP y desacopla la vista de la autenticación. |
 | **Modelo de Autorización** | **Control Booleano Simple (`isAdmin: boolean`):** Flag binario en el objeto de usuario. | **Modelo RBAC Formal con Claims JWT:** Jerarquía de roles (`ADMIN`, `SUPERVISOR`, `STANDARD_USER`) y permisos granulares. | Un flag binario es frágil, carece de granularidad y colapsa cuando el sistema incorpora roles intermedios o de auditoría. RBAC proporciona un modelo escalable sin la sobrecarga computacional de evaluar reglas dinámicas en runtime como exigiría ABAC. |
 | **Modelo de Autorización (Comparativa)** | **ABAC (Attribute-Based Access Control):** Evaluación en runtime por contexto (IP, horario, departamento). | **Modelo RBAC Formal:** Roles mapeados a matrices estáticas de permisos. | ABAC impone una complejidad arquitectónica y consumo de CPU desproporcionado para clientes móviles. RBAC ofrece complejidad algorítmica $O(1)$ en consultas locales de interfaz mediante Signals computadas. |
-
----
-
-## 5. Resumen de Cumplimiento de la Rúbrica de Evaluación
-
-* **Rigor Conceptual (Guards e Interceptors) [9-10 Puntos]:** Explicación precisa de `canMatch` vs `canActivate`, APIs funcionales modernas (`HttpInterceptorFn`, `provideHttpClient(withInterceptors([...]))`) y flujo reactivo RxJS.
-* **Arquitectura RBAC y Modelo de Datos [9-10 Puntos]:** Estructura formal de tokens JWT, modelado de claims (`sub`, `role`, `permissions`, `exp`), y desacoplamiento estricto entre sesión (`AuthService`), Signals y directivas de UI.
-* **Justificación de Implementación y Rutas [9-10 Puntos]:** Mapeo de rutas reales en `app.routes.ts`, manejo centralizado de respuestas HTTP 401 y 403, y navegación contextual con memoria de ruta (`returnUrl`).
-* **Evaluación Crítica de Alternativas [9-10 Puntos]:** Matriz comparativa objetiva basada en seguridad, sobrecarga de red, mantenibilidad y escalabilidad.

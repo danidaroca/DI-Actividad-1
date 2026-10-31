@@ -408,30 +408,12 @@ def build_pdf():
         ('BACKGROUND', (0,0), (-1,0), primary_blue),
         ('GRID', (0,0), (-1,-1), 0.5, border_color),
         ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.white, colors.HexColor("#F8FAFC")]),
-        ('PADDING', (0,0), (-1,-1), 3),
+        ('PADDING', (0,0), (-1,-1), 5),
     ]))
     story.append(t_alt)
-    story.append(Spacer(1, 5))
+    story.append(Spacer(1, 12))
 
-    story.append(Paragraph("5. Rúbrica de Evaluación Específica (Cumplimiento de Nivel Excelente 9-10)", h1_style))
-    rubric_data = [
-        [Paragraph("<b>Criterio Oficial</b>", table_header_style), Paragraph("<b>Nivel Evaluado</b>", table_header_style), Paragraph("<b>Evidencias Implementadas en el Proyecto</b>", table_header_style)],
-        [Paragraph("<b>Rigor Conceptual (Guards e Interceptors)</b>", table_cell_style), Paragraph("<b>Excelente (9-10)</b>", table_cell_style), Paragraph("APIs funcionales modernas (canMatch, canActivate, HttpInterceptorFn). Flujo reactivo RxJS con catchError, clonación inmutable de request y explicación canActivate vs canMatch.", table_cell_style)],
-        [Paragraph("<b>Arquitectura RBAC y Modelo de Datos</b>", table_cell_style), Paragraph("<b>Excelente (9-10)</b>", table_cell_style), Paragraph("Definición formal RBAC (Usuario &rarr; Rol &rarr; Permisos). Token JWT con claims ('sub', 'role', 'permissions', 'exp'). Desacoplamiento de estado en AuthService con Signals.", table_cell_style)],
-        [Paragraph("<b>Justificación de Implementación y Rutas</b>", table_cell_style), Paragraph("<b>Excelente (9-10)</b>", table_cell_style), Paragraph("Mapeo exacto de rutas en app.routes.ts, provideHttpClient en main.ts, captura de errores 401/403 en errorInterceptor y redirección contextual preservando returnUrl.", table_cell_style)],
-        [Paragraph("<b>Evaluación Crítica de Alternativas</b>", table_cell_style), Paragraph("<b>Excelente (9-10)</b>", table_cell_style), Paragraph("Matriz comparativa objetiva de 4 dimensiones fundamentada en seguridad, sobrecarga de red, mantenibilidad y escalabilidad del código cliente.", table_cell_style)]
-    ]
-    t_rubric = Table(rubric_data, colWidths=[130, 85, 292])
-    t_rubric.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), navy_blue),
-        ('GRID', (0,0), (-1,-1), 0.5, border_color),
-        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.white, colors.HexColor("#F8FAFC")]),
-        ('PADDING', (0,0), (-1,-1), 3),
-    ]))
-    story.append(t_rubric)
-    story.append(Spacer(1, 4))
-
-    story.append(Paragraph("<b>Conclusión Técnica:</b> La arquitectura de seguridad implementada garantiza cumplimiento íntegro de los estándares curriculares de DAM 2, máxima eficiencia en dispositivos móviles y protección rigurosa de las interfaces de usuario.", ParagraphStyle('Callout', parent=styles['Normal'], fontName='Helvetica-Oblique', fontSize=7.5, leading=10, textColor=primary_blue)))
+    story.append(Paragraph("<b>Conclusión Técnica:</b> La arquitectura de seguridad implementada garantiza cumplimiento íntegro de los estándares curriculares de DAM 2, máxima eficiencia en dispositivos móviles y protección rigurosa de las interfaces de usuario frente a accesos y peticiones no autorizadas.", ParagraphStyle('Callout', parent=styles['Normal'], fontName='Helvetica-Oblique', fontSize=8, leading=11, textColor=primary_blue)))
 
     doc.build(story, canvasmaker=NumberedCanvas)
 
